@@ -1,10 +1,9 @@
 {
     "name": "poetry-for-neanderthals",
     "scripts": {
-        "ng": "ng",
         "start": "ng serve",
-        "build": "ng build",
-        "watch": "ng build --watch --configuration development",
+        "build": "ng build --verbose",
+        "build:dev": "ng build --verbose --watch --configuration dev",
         "prepare": "husky",
         "prettier": "prettier --write .",
         "knip": "knip",

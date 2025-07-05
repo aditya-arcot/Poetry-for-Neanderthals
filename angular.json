@@ -52,7 +52,12 @@
                         "styles": ["src/styles.css"]
                     },
                     "configurations": {
-                        "production": {
+                        "prod": {
+                            "optimization": true,
+                            "extractLicenses": true,
+                            "sourceMap": false,
+                            "namedChunks": false,
+                            "outputHashing": "all",
                             "budgets": [
                                 {
                                     "type": "initial",
@@ -64,28 +69,26 @@
                                     "maximumWarning": "4kB",
                                     "maximumError": "8kB"
                                 }
-                            ],
-                            "outputHashing": "all"
+                            ]
                         },
-                        "development": {
+                        "dev": {
                             "optimization": false,
                             "extractLicenses": false,
-                            "sourceMap": true
+                            "sourceMap": true,
+                            "namedChunks": true,
+                            "outputHashing": "none"
                         }
                     },
-                    "defaultConfiguration": "production"
+                    "defaultConfiguration": "prod"
                 },
                 "serve": {
                     "builder": "@angular/build:dev-server",
                     "configurations": {
-                        "production": {
-                            "buildTarget": "Poetry-for-Neanderthals:build:production"
-                        },
-                        "development": {
-                            "buildTarget": "Poetry-for-Neanderthals:build:development"
+                        "dev": {
+                            "buildTarget": "Poetry-for-Neanderthals:build:dev"
                         }
                     },
-                    "defaultConfiguration": "development"
+                    "defaultConfiguration": "dev"
                 },
                 "extract-i18n": {
                     "builder": "@angular/build:extract-i18n"
