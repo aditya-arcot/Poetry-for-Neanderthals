@@ -1,4 +1,4 @@
 {
     "$schema": "https://unpkg.com/knip@5/schema.json",
-    "ignoreDependencies": ["npm-check-updates"]
+    "ignoreDependencies": ["bootstrap", "bootstrap-icons", "npm-check-updates"]
 }
