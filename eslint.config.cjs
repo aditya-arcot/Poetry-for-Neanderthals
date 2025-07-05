@@ -67,6 +67,18 @@ module.exports = tseslint.config(
                 },
             ],
             'no-console': 'warn',
+            'no-restricted-imports': [
+                'warn',
+                {
+                    patterns: [
+                        {
+                            group: ['.*'],
+                            message:
+                                'Avoid relative imports. Use path aliases instead',
+                        },
+                    ],
+                },
+            ],
         },
     },
     {
