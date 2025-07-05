@@ -1,13 +1,14 @@
 {
     "name": "poetry-for-neanderthals",
+    "private": true,
     "scripts": {
-        "start": "ng serve",
         "build": "ng build --verbose",
         "build:dev": "ng build --verbose --watch --configuration dev",
-        "prepare": "husky",
-        "prettier": "prettier --write .",
         "knip": "knip",
-        "lint": "ng lint --fix --max-warnings=0"
+        "lint": "ng lint --fix --max-warnings=0",
+        "prepare": "husky && sort-package-json",
+        "prettier": "prettier --write .",
+        "start": "ng serve"
     },
     "lint-staged": {
         "*": [
@@ -15,7 +16,6 @@
             "prettier --write --ignore-unknown"
         ]
     },
-    "private": true,
     "dependencies": {
         "@angular/common": "^20.0.0",
         "@angular/compiler": "^20.0.0",
@@ -23,6 +23,7 @@
         "@angular/platform-browser": "^20.0.0",
         "@angular/router": "^20.0.0",
         "rxjs": "~7.8.0",
+        "sort-package-json": "^3.4.0",
         "tslib": "^2.3.0",
         "zone.js": "~0.15.0"
     },
