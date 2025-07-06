@@ -1,0 +1,82 @@
+import { HttpClient } from '@angular/common/http'
+import { inject, Injectable } from '@angular/core'
+import { Card, RawCard } from '@models'
+import { createLoggerWithContext, LoggerService } from '@services'
+import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs'
+
+@Injectable({
+    providedIn: 'root',
+})
+export class CardService {
+    private http = inject(HttpClient)
+
+    private readonly logger: LoggerService
+    private readonly baseUrl = `/cards`
+    private cards: Card[] = []
+
+    constructor() {
+        this.logger = createLoggerWithContext('CardService')
+    }
+
+    loadCards(): Observable<boolean> {
+        this.logger.info('loading cards')
+        return this.getCardFileNames().pipe(
+            switchMap((fileNames) => this.getRawCardLists(fileNames)),
+            map((rawCardLists) => this.processRawCardLists(rawCardLists)),
+            catchError((err) => {
+                this.logger.error('error loading cards', { err })
+                return of(false)
+            })
+        )
+    }
+
+    private getCardFileNames(): Observable<string[]> {
+        return this.http.get<string[]>(`${this.baseUrl}/index.json`).pipe(
+            switchMap((fileNames: string[]) => {
+                if (!fileNames || !fileNames.length) {
+                    throw Error('no card filenames found in index')
+                }
+                this.logger.info('found card filenames', { fileNames })
+                return of(fileNames)
+            })
+        )
+    }
+
+    private getRawCardLists(fileNames: string[]): Observable<RawCard[][]> {
+        this.logger.info(`loading ${fileNames.length} card files`)
+        const requests = fileNames.map((name) =>
+            this.http.get<RawCard[]>(`${this.baseUrl}/${name}.json`)
+        )
+        return forkJoin(requests)
+    }
+
+    private processRawCardLists(rawCardLists: RawCard[][]): boolean {
+        const cards = rawCardLists.flat().map(
+            (entry): Card => ({
+                onePoint: entry['1'],
+                threePoint: entry['3'],
+            })
+        )
+        if (!cards.length) throw Error('no cards found in card lists')
+
+        cards.sort((a, b) => {
+            const oneCompare = a.onePoint
+                .toLowerCase()
+                .localeCompare(b.onePoint.toLowerCase())
+            return oneCompare !== 0
+                ? oneCompare
+                : a.threePoint
+                      .toLowerCase()
+                      .localeCompare(b.threePoint.toLowerCase())
+        })
+
+        this.logger.info(`loaded ${cards.length} cards`, { cards })
+        this.cards = cards
+        return true
+    }
+
+    getNextCard(): Card {
+        // TODO implement next card logic
+        return this.cards[0]
+    }
+}
