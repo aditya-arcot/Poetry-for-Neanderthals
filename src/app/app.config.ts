@@ -7,12 +7,10 @@ import {
     provideBrowserGlobalErrorListeners,
     provideZoneChangeDetection,
 } from '@angular/core'
-import { provideRouter, Router } from '@angular/router'
-import { RouteEnum } from '@enums'
+import { provideRouter } from '@angular/router'
 import { StartupService } from '@services'
 import { routes } from 'app/app.routes'
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger'
-import { lastValueFrom } from 'rxjs'
 
 const provideLogger = () => {
     return importProvidersFrom(
@@ -22,13 +20,6 @@ const provideLogger = () => {
     )
 }
 
-const provideInitializer = provideAppInitializer(async () => {
-    const startupSvc = inject(StartupService)
-    const router = inject(Router)
-    await lastValueFrom(startupSvc.startup())
-    if (!startupSvc.success) void router.navigateByUrl(RouteEnum.StartupError)
-})
-
 export const appConfig: ApplicationConfig = {
     providers: [
         provideBrowserGlobalErrorListeners(),
@@ -36,6 +27,6 @@ export const appConfig: ApplicationConfig = {
         provideRouter(routes),
         provideHttpClient(),
         provideLogger(),
-        provideInitializer,
+        provideAppInitializer(() => inject(StartupService).startup()),
     ],
 }

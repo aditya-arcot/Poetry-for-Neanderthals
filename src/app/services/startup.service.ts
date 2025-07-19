@@ -1,5 +1,13 @@
+import { HttpErrorResponse } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
-import { CardService, createLoggerWithContext, LoggerService } from '@services'
+import { Router } from '@angular/router'
+import { RouteEnum } from '@enums'
+import {
+    AlertService,
+    CardService,
+    createLoggerWithContext,
+    LoggerService,
+} from '@services'
 import { catchError, Observable, of, switchMap } from 'rxjs'
 
 @Injectable({
@@ -7,6 +15,8 @@ import { catchError, Observable, of, switchMap } from 'rxjs'
 })
 export class StartupService {
     private cardSvc = inject(CardService)
+    private alertSvc = inject(AlertService)
+    private router = inject(Router)
 
     private readonly logger: LoggerService
     success = false
@@ -18,12 +28,13 @@ export class StartupService {
     startup(): Observable<void> {
         this.logger.info('starting up')
         return this.cardSvc.loadCards().pipe(
-            switchMap((success) => {
-                this.success = success
+            switchMap(() => {
+                this.success = true
                 return of(undefined)
             }),
-            catchError((err) => {
-                this.logger.error('startup error', { err })
+            catchError((err: HttpErrorResponse) => {
+                void this.router.navigateByUrl(RouteEnum.StartupError)
+                this.alertSvc.addErrorAlert(this.logger, err.message)
                 return of(undefined)
             })
         )

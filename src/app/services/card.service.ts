@@ -18,21 +18,21 @@ export class CardService {
         this.logger = createLoggerWithContext('CardService')
     }
 
-    loadCards(): Observable<boolean> {
+    loadCards(): Observable<void> {
         this.logger.info('loading cards')
         return this.getCardFileNames().pipe(
             switchMap((fileNames) => this.getRawCardLists(fileNames)),
             map((rawCardLists) => this.processRawCardLists(rawCardLists)),
             catchError((err) => {
-                this.logger.error('error loading cards', { err })
-                return of(false)
+                this.logger.error('error loading cards', err)
+                throw Error('failed to load cards')
             })
         )
     }
 
     private getCardFileNames(): Observable<string[]> {
         return this.http.get<string[]>(`${this.baseUrl}/index.json`).pipe(
-            switchMap((fileNames: string[]) => {
+            switchMap((fileNames: string[] | null) => {
                 if (!fileNames || !fileNames.length) {
                     throw Error('no card filenames found in index')
                 }
@@ -50,7 +50,7 @@ export class CardService {
         return forkJoin(requests)
     }
 
-    private processRawCardLists(rawCardLists: RawCard[][]): boolean {
+    private processRawCardLists(rawCardLists: RawCard[][]) {
         const cards = rawCardLists.flat().map(
             (entry): Card => ({
                 onePoint: entry['1'],
@@ -72,7 +72,6 @@ export class CardService {
 
         this.logger.info(`loaded ${cards.length} cards`, { cards })
         this.cards = cards
-        return true
     }
 
     getNextCard(): Card {
