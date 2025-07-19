@@ -2,7 +2,6 @@ import { Routes } from '@angular/router'
 import { RouteEnum as Route } from '@enums'
 
 export const routes: Routes = [
-    // TODO add routes
     {
         path: 'startup-error',
         loadComponent: () =>
@@ -11,8 +10,12 @@ export const routes: Routes = [
             ),
     },
     {
+        path: 'home',
+        loadComponent: () =>
+            import('./pages/home/home.component').then((m) => m.HomeComponent),
+    },
+    {
         path: '**',
-        // TODO change redirect
         redirectTo: Route.Home,
     },
 ]

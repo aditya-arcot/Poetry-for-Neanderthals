@@ -1,0 +1,87 @@
+<div class="container d-flex vh-100 align-items-center justify-content-center">
+    <div class="row w-100 justify-content-center">
+        <div class="col-lg-6">
+            <div class="card">
+                <h3 class="card-header text-center">Poetry for Neanderthals</h3>
+                <div class="card-body">
+                    @if (!newGame) {
+                        <div class="text-center">
+                            <button class="btn btn-primary" (click)="continueGame()">Continue Game</button>
+                            <button class="btn btn-success mx-2" (click)="startNewGame()">Start New Game</button>
+                        </div>
+                    } @else {
+                        <form #newGameForm class="needs-validation" [formGroup]="newGameFormGroup" novalidate>
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <label for="players">Players Per Team</label>
+                                    <input
+                                        type="number"
+                                        id="players"
+                                        class="form-control"
+                                        formControlName="players"
+                                        required
+                                        [min]="1"
+                                        [max]="100"
+                                        (keypress)="handleNewGameFormKeypress($event)"
+                                    />
+                                    @if (newGameFormGroup.controls['players'].hasError('required')) {
+                                        <div class="invalid-feedback">Players per team cannot be empty</div>
+                                    } @else if (newGameFormGroup.controls['players'].hasError('min') || newGameFormGroup.controls['players'].hasError('max')) {
+                                        <div class="invalid-feedback">Players per team must be between 1 and 100</div>
+                                    }
+                                </div>
+                                <div class="col">
+                                    <label for="rounds">Number of Rounds</label>
+                                    <input
+                                        type="number"
+                                        id="rounds"
+                                        class="form-control"
+                                        formControlName="rounds"
+                                        required
+                                        [min]="1"
+                                        [max]="10"
+                                        (keypress)="handleNewGameFormKeypress($event)"
+                                    />
+                                    @if (newGameFormGroup.controls['rounds'].hasError('required')) {
+                                        <div class="invalid-feedback">Number of rounds cannot be empty</div>
+                                    } @else if (newGameFormGroup.controls['rounds'].hasError('min') || newGameFormGroup.controls['rounds'].hasError('max')) {
+                                        <div class="invalid-feedback">Number of rounds must be between 1 and 10</div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <input
+                                    type="checkbox"
+                                    id="useCustomSeed"
+                                    class="form-check-input me-2"
+                                    formControlName="useCustomSeed"
+                                    (input)="setCustomSeedValidity(customSeedInput)"
+                                />
+                                <label for="useCustomSeed"><small>Use Custom Seed?</small></label>
+                            </div>
+                            <div class="mb-2" [class.d-none]="!newGameFormGroup.controls['useCustomSeed'].value">
+                                <input
+                                    #customSeedInput
+                                    type="number"
+                                    class="form-control"
+                                    formControlName="customSeed"
+                                    [required]="newGameFormGroup.controls['useCustomSeed'].value"
+                                    (input)="setCustomSeedValidity(customSeedInput)"
+                                    (keypress)="handleNewGameFormKeypress($event)"
+                                />
+                                @if (newGameFormGroup.hasError('customSeedRequired')) {
+                                    <div class="invalid-feedback">Seed cannot be empty</div>
+                                } @else if (newGameFormGroup.hasError('customSeedOutOfRange')) {
+                                    <div class="invalid-feedback">Seed must be between 0 and 999,999</div>
+                                }
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-primary" title="Start Game" (click)="validateNewGameForm()">Start Game</button>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
