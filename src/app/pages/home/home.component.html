@@ -11,43 +11,39 @@
                         </div>
                     } @else {
                         <form #newGameForm class="needs-validation" [formGroup]="newGameFormGroup" novalidate>
-                            <div class="row mb-2">
-                                <div class="col">
-                                    <label for="players">Players Per Team</label>
-                                    <input
-                                        type="number"
-                                        id="players"
-                                        class="form-control"
-                                        formControlName="players"
-                                        required
-                                        [min]="1"
-                                        [max]="100"
-                                        (keypress)="handleNewGameFormKeypress($event)"
-                                    />
-                                    @if (newGameFormGroup.controls['players'].hasError('required')) {
-                                        <div class="invalid-feedback">Players per team cannot be empty</div>
-                                    } @else if (newGameFormGroup.controls['players'].hasError('min') || newGameFormGroup.controls['players'].hasError('max')) {
-                                        <div class="invalid-feedback">Players per team must be between 1 and 100</div>
-                                    }
-                                </div>
-                                <div class="col">
-                                    <label for="rounds">Number of Rounds</label>
-                                    <input
-                                        type="number"
-                                        id="rounds"
-                                        class="form-control"
-                                        formControlName="rounds"
-                                        required
-                                        [min]="1"
-                                        [max]="10"
-                                        (keypress)="handleNewGameFormKeypress($event)"
-                                    />
-                                    @if (newGameFormGroup.controls['rounds'].hasError('required')) {
-                                        <div class="invalid-feedback">Number of rounds cannot be empty</div>
-                                    } @else if (newGameFormGroup.controls['rounds'].hasError('min') || newGameFormGroup.controls['rounds'].hasError('max')) {
-                                        <div class="invalid-feedback">Number of rounds must be between 1 and 10</div>
-                                    }
-                                </div>
+                            <div class="mb-2">
+                                <label for="playersPerTeam">Players Per Team</label>
+                                <input
+                                    type="number"
+                                    id="playersPerTeam"
+                                    class="form-control"
+                                    formControlName="playersPerTeam"
+                                    required
+                                    [min]="1"
+                                    [max]="10"
+                                    (keypress)="handleNewGameFormKeypress($event)"
+                                />
+                                @if (
+                                    newGameFormGroup.controls['playersPerTeam'].hasError('min') || newGameFormGroup.controls['playersPerTeam'].hasError('max')
+                                ) {
+                                    <div class="invalid-feedback">Value must be between 1 and 10</div>
+                                }
+                            </div>
+                            <div class="mb-2">
+                                <label for="rounds">Number of Rounds</label>
+                                <input
+                                    type="number"
+                                    id="rounds"
+                                    class="form-control"
+                                    formControlName="rounds"
+                                    required
+                                    [min]="1"
+                                    [max]="10"
+                                    (keypress)="handleNewGameFormKeypress($event)"
+                                />
+                                @if (newGameFormGroup.controls['rounds'].hasError('min') || newGameFormGroup.controls['rounds'].hasError('max')) {
+                                    <div class="invalid-feedback">Value must be between 1 and 10</div>
+                                }
                             </div>
                             <div class="mb-2">
                                 <input
@@ -69,10 +65,8 @@
                                     (input)="setCustomSeedValidity(customSeedInput)"
                                     (keypress)="handleNewGameFormKeypress($event)"
                                 />
-                                @if (newGameFormGroup.hasError('customSeedRequired')) {
-                                    <div class="invalid-feedback">Seed cannot be empty</div>
-                                } @else if (newGameFormGroup.hasError('customSeedOutOfRange')) {
-                                    <div class="invalid-feedback">Seed must be between 0 and 999,999</div>
+                                @if (newGameFormGroup.hasError('customSeedOutOfRange')) {
+                                    <div class="invalid-feedback">Value must be between 0 and 999,999</div>
                                 }
                             </div>
                             <div class="text-center">

@@ -23,7 +23,7 @@ export class HomeComponent extends LoggerComponent implements OnInit {
         super('HomeComponent')
         this.newGameFormGroup = this.formBuilder.group(
             {
-                players: [3],
+                playersPerTeam: [3],
                 rounds: [5],
                 useCustomSeed: [false],
                 customSeed: [null],
