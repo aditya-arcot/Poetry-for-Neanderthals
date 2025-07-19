@@ -16,9 +16,11 @@
         "module": "preserve",
         "baseUrl": "src",
         "paths": {
+            "@components": ["app/components/index.ts"],
             "@enums": ["app/enums/index.ts"],
             "@models": ["app/models/index.ts"],
-            "@services": ["app/services/index.ts"]
+            "@services": ["app/services/index.ts"],
+            "@utilities": ["app/utilities/index.ts"]
         }
     },
     "angularCompilerOptions": {
