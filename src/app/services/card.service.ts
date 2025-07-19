@@ -8,17 +8,17 @@ import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs'
     providedIn: 'root',
 })
 export class CardService {
-    private http = inject(HttpClient)
-
     private readonly logger: LoggerService
+    private readonly http = inject(HttpClient)
     private readonly baseUrl = `/cards`
+
     private cards: Card[] = []
 
     constructor() {
         this.logger = createLoggerWithContext('CardService')
     }
 
-    loadCards(): Observable<void> {
+    loadCards = (): Observable<void> => {
         this.logger.info('loading cards')
         return this.getCardFileNames().pipe(
             switchMap((fileNames) => this.getRawCardLists(fileNames)),
@@ -30,7 +30,7 @@ export class CardService {
         )
     }
 
-    private getCardFileNames(): Observable<string[]> {
+    private getCardFileNames = (): Observable<string[]> => {
         return this.http.get<string[]>(`${this.baseUrl}/index.json`).pipe(
             switchMap((fileNames: string[] | null) => {
                 if (!fileNames || !fileNames.length) {
@@ -42,7 +42,9 @@ export class CardService {
         )
     }
 
-    private getRawCardLists(fileNames: string[]): Observable<RawCard[][]> {
+    private getRawCardLists = (
+        fileNames: string[]
+    ): Observable<RawCard[][]> => {
         this.logger.info(`loading ${fileNames.length} card files`)
         const requests = fileNames.map((name) =>
             this.http.get<RawCard[]>(`${this.baseUrl}/${name}.json`)
@@ -50,7 +52,7 @@ export class CardService {
         return forkJoin(requests)
     }
 
-    private processRawCardLists(rawCardLists: RawCard[][]) {
+    private processRawCardLists = (rawCardLists: RawCard[][]) => {
         const cards = rawCardLists.flat().map(
             (entry): Card => ({
                 onePoint: entry['1'],

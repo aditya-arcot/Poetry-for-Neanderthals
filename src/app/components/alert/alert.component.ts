@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs'
     styleUrl: './alert.component.css',
 })
 export class AlertComponent implements OnDestroy {
-    private alertSvc = inject(AlertService)
+    private readonly alertSvc = inject(AlertService)
 
     alerts: Alert[] = []
     subscription: Subscription
@@ -27,11 +27,11 @@ export class AlertComponent implements OnDestroy {
         this.subscription.unsubscribe()
     }
 
-    removeAlert(id: string): void {
+    removeAlert = (id: string): void => {
         this.alertSvc.removeAlert(id)
     }
 
-    getAlertClass(type: AlertTypeEnum): string {
+    getAlertClass = (type: AlertTypeEnum): string => {
         switch (type) {
             case AlertTypeEnum.Success:
                 return 'alert-success'
@@ -40,7 +40,7 @@ export class AlertComponent implements OnDestroy {
         }
     }
 
-    getAlertIconClass(type: AlertTypeEnum): string {
+    getAlertIconClass = (type: AlertTypeEnum): string => {
         switch (type) {
             case AlertTypeEnum.Success:
                 return 'bi-check-circle-fill'

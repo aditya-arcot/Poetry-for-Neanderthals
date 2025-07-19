@@ -13,35 +13,35 @@ export class AlertService {
     private alerts: Alert[] = []
     private alertSubject = new BehaviorSubject<Alert[]>([])
 
-    getAlerts(): Observable<Alert[]> {
+    getAlerts = (): Observable<Alert[]> => {
         return this.alertSubject.asObservable()
     }
 
-    addSuccessAlert(
+    addSuccessAlert = (
         logger: LoggerService,
         message: string,
         ...subtext: string[]
-    ): void {
+    ): void => {
         this.addAlert(AlertTypeEnum.Success, message, subtext)
         if (subtext.length) logger.info(message, { subtext })
         else logger.info(message)
     }
 
-    addErrorAlert(
+    addErrorAlert = (
         logger: LoggerService,
         message: string,
         ...subtext: string[]
-    ): void {
+    ): void => {
         this.addAlert(AlertTypeEnum.Error, message, subtext)
         if (subtext.length) logger.error(message, { subtext })
         else logger.error(message)
     }
 
-    private addAlert(
+    private addAlert = (
         type: AlertTypeEnum,
         message: string,
         subtext: string[]
-    ): void {
+    ): void => {
         const alert: Alert = {
             id: uuid(),
             type,
@@ -58,7 +58,7 @@ export class AlertService {
         )
     }
 
-    removeAlert(id: string): void {
+    removeAlert = (id: string): void => {
         this.alerts = this.alerts.filter((n) => n.id !== id)
         this.alertSubject.next([...this.alerts])
     }

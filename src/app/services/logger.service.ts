@@ -8,27 +8,27 @@ interface Log {
 }
 
 export class LoggerService {
-    private logger = inject(NGXLogger)
+    private readonly logger = inject(NGXLogger)
 
     constructor(private context: string) {}
 
-    debug(message: string, data?: object): void {
+    debug = (message: string, data?: object): void => {
         this.logger.debug(this.createLogWithData(message, data))
     }
 
-    info(message: string, data?: object): void {
+    info = (message: string, data?: object): void => {
         this.logger.info(this.createLogWithData(message, data))
     }
 
-    warn(message: string, data?: object): void {
+    warn = (message: string, data?: object): void => {
         this.logger.warn(this.createLogWithData(message, data))
     }
 
-    error(message: string, error?: object): void {
+    error = (message: string, error?: object): void => {
         this.logger.error(this.createLogWithData(message, error))
     }
 
-    private createLogWithData(message: string, data?: object) {
+    private createLogWithData = (message: string, data?: object) => {
         const log: Log = {
             context: this.context,
             message,
@@ -38,6 +38,6 @@ export class LoggerService {
     }
 }
 
-export function createLoggerWithContext(context: string): LoggerService {
+export const createLoggerWithContext = (context: string): LoggerService => {
     return new LoggerService(context)
 }

@@ -12,7 +12,7 @@ import { LoggerComponent } from '@components'
     templateUrl: './home.component.html',
 })
 export class HomeComponent extends LoggerComponent implements OnInit {
-    private formBuilder = inject(FormBuilder)
+    private readonly formBuilder = inject(FormBuilder)
 
     @ViewChild('newGameForm') newGameForm!: ElementRef<HTMLFormElement>
     newGameFormGroup: FormGroup
@@ -49,19 +49,17 @@ export class HomeComponent extends LoggerComponent implements OnInit {
     }
 
     handleNewGameFormKeypress = (event: KeyboardEvent) => {
-        if (event.key === 'Enter') {
-            this.validateNewGameForm()
-        }
+        if (event.key === 'Enter') this.validateNewGameForm()
     }
 
-    validateNewGameForm() {
+    validateNewGameForm = () => {
         const newGameForm = this.newGameForm?.nativeElement
         if (!this.newGameFormGroup.valid) this.logger.info('validation failed')
         else this.startGame()
         newGameForm.classList.add('was-validated')
     }
 
-    validateCustomSeed(control: AbstractControl) {
+    validateCustomSeed = (control: AbstractControl) => {
         const useCustomSeed: boolean = control.get('useCustomSeed')?.value
         if (!useCustomSeed) return null
 
@@ -72,7 +70,7 @@ export class HomeComponent extends LoggerComponent implements OnInit {
         return null
     }
 
-    setCustomSeedValidity(input: HTMLInputElement) {
+    setCustomSeedValidity = (input: HTMLInputElement) => {
         if (this.newGameFormGroup.errors) {
             const messages = Object.keys(this.newGameFormGroup.errors)
             input.setCustomValidity(messages.join(', '))

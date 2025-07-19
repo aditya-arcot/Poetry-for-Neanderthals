@@ -6,10 +6,10 @@ import { StartupService } from '@services'
     templateUrl: './startup-error.component.html',
 })
 export class StartupErrorComponent implements OnInit {
-    private startupSvc = inject(StartupService)
-    private router = inject(Router)
+    private readonly startupSvc = inject(StartupService)
+    private readonly router = inject(Router)
 
-    ngOnInit() {
+    ngOnInit(): void {
         if (this.startupSvc.success) void this.router.navigateByUrl('/')
     }
 }
