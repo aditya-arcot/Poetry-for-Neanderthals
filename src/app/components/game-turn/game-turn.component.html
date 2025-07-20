@@ -1,0 +1,37 @@
+@if (intro) {
+    <div class="card-body">
+        <h5 class="text-center mb-2">Round {{ round }}</h5>
+        <p class="text-center mb-1">
+            Hand the device to player <strong>{{ player }}</strong> on team <strong>{{ team }}</strong>
+        </p>
+        <p class="text-center mb-2">Remember: <span class="fst-italic">only use one-syllable words</span></p>
+        <div class="text-center">
+            <button class="btn btn-success" (click)="startTurn()">Start Turn</button>
+        </div>
+    </div>
+} @else {
+    <div class="card-body">
+        <div class="row justify-content-center">
+            <div class="col-5 d-flex flex-column justify-content-around text-center">
+                <span class="text-primary mb-2">{{ onePointWord }}</span>
+                <span class="text-success mb-2">{{ threePointWord }}</span>
+                <span class="text-danger">Skip</span>
+            </div>
+            <div class="col-5 d-flex flex-column justify-content-around">
+                <button class="btn btn-primary mb-2" (click)="advance(1)">+1</button>
+                <button class="btn btn-success mb-2" (click)="advance(3)">+3</button>
+                <button class="btn btn-danger" (click)="advance(-1)">-1</button>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div
+            class="progress my-2"
+            role="progressbar"
+            [style.width.%]="(time / turnTime) * 100"
+            [class.bg-danger]="time <= 0.1 * turnTime"
+            [class.bg-warning]="time > 0.1 * turnTime && time <= 0.25 * turnTime"
+            [class.bg-success]="time > 0.25 * turnTime"
+        ></div>
+    </div>
+}

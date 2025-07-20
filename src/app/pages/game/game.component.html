@@ -1,0 +1,16 @@
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card">
+                <h3 class="card-header text-center">Poetry for Neanderthals</h3>
+                @if (gameComponent === gameComponentEnum.Turn) {
+                    <app-game-turn [round]="round" [player]="player" [team]="team" (turnDone)="handleTurnDone($event)" />
+                } @else if (gameComponent === gameComponentEnum.Summary) {
+                    <app-game-turn-summary [points]="gameState.scores" [turnPoints]="turnPoints" [turnCards]="turnCards" (nextTurn)="handleNextTurn()" />
+                } @else {
+                    <app-game-summary [points]="gameState.scores" (endGame)="handleEndGame()" />
+                }
+            </div>
+        </div>
+    </div>
+</div>

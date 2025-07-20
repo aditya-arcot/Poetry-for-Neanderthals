@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
 import { Card, RawCard } from '@models'
-import { createLoggerWithContext, LoggerService } from '@services'
+import {
+    createLoggerWithContext,
+    LoggerService,
+    RandomService,
+} from '@services'
 import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs'
 
 @Injectable({
@@ -10,6 +14,7 @@ import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs'
 export class CardService {
     private readonly logger: LoggerService
     private readonly http = inject(HttpClient)
+    private readonly randomSvc = inject(RandomService)
     private readonly baseUrl = `/cards`
 
     private cards: Card[] = []
@@ -36,7 +41,7 @@ export class CardService {
                 if (!fileNames || !fileNames.length) {
                     throw Error('no card filenames found in index')
                 }
-                this.logger.info('found card filenames', { fileNames })
+                this.logger.debug('found card filenames', { fileNames })
                 return of(fileNames)
             })
         )
@@ -45,7 +50,7 @@ export class CardService {
     private getRawCardLists = (
         fileNames: string[]
     ): Observable<RawCard[][]> => {
-        this.logger.info(`loading ${fileNames.length} card files`)
+        this.logger.debug(`loading ${fileNames.length} card files`)
         const requests = fileNames.map((name) =>
             this.http.get<RawCard[]>(`${this.baseUrl}/${name}.json`)
         )
@@ -72,12 +77,14 @@ export class CardService {
                       .localeCompare(b.threePoint.toLowerCase())
         })
 
-        this.logger.info(`loaded ${cards.length} cards`, { cards })
+        this.logger.debug(`loaded ${cards.length} cards`, { cards })
         this.cards = cards
     }
 
-    getNextCard(): Card {
-        // TODO implement next card logic
-        return this.cards[0]
+    getNextCard = (): Card => {
+        if (this.cards.length === 0) throw Error('no cards available')
+        const idx = this.randomSvc.getRandomInt(0, this.cards.length - 1)
+        this.logger.debug(`selected card at index ${idx}`)
+        return this.cards[idx]
     }
 }

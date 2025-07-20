@@ -1,0 +1,28 @@
+<div class="card-body">
+    <div class="text-center mb-3">
+        <h4 class="mb-1">Turn Summary</h4>
+        <p class="mb-1"><span class="fw-bold">Total points:</span> {{ totalTurnPoints }}</p>
+        @for (card of turnCards; track $index; let i = $index) {
+            <div class="row text-center align-items-center">
+                <div class="col">
+                    <span [class]="getCardOnePointClass(i)">{{ card.onePoint }}</span>
+                </div>
+                <div class="col">
+                    <span [class]="getCardThreePointClass(i)">{{ card.threePoint }}</span>
+                </div>
+                <div class="col">
+                    <span [class]="getCardSkipClass(i)">Skip</span>
+                </div>
+            </div>
+            @if (i < turnCards.length - 1) {
+                <hr class="my-1" />
+            }
+        }
+    </div>
+    <div class="text-center">
+        <h4 class="mb-1">Scores</h4>
+        <p class="mb-0"><span class="fw-bold">Team 1:</span> {{ points[0] }}</p>
+        <p class="mb-2"><span class="fw-bold">Team 2:</span> {{ points[1] }}</p>
+        <button class="btn btn-success" (click)="nextTurn.emit()">Continue</button>
+    </div>
+</div>

@@ -5,7 +5,10 @@ import {
     FormGroup,
     ReactiveFormsModule,
 } from '@angular/forms'
+import { Router } from '@angular/router'
 import { LoggerComponent } from '@components'
+import { RouteEnum } from '@enums'
+import { GameService, RandomService } from '@services'
 
 @Component({
     imports: [ReactiveFormsModule],
@@ -13,6 +16,9 @@ import { LoggerComponent } from '@components'
 })
 export class HomeComponent extends LoggerComponent implements OnInit {
     private readonly formBuilder = inject(FormBuilder)
+    private readonly gameSvc = inject(GameService)
+    private readonly randomSvc = inject(RandomService)
+    private readonly router = inject(Router)
 
     @ViewChild('newGameForm') newGameForm!: ElementRef<HTMLFormElement>
     newGameFormGroup: FormGroup
@@ -23,8 +29,8 @@ export class HomeComponent extends LoggerComponent implements OnInit {
         super('HomeComponent')
         this.newGameFormGroup = this.formBuilder.group(
             {
+                rounds: [3],
                 playersPerTeam: [3],
-                rounds: [5],
                 useCustomSeed: [false],
                 customSeed: [null],
             },
@@ -44,7 +50,7 @@ export class HomeComponent extends LoggerComponent implements OnInit {
 
     startNewGame = () => {
         this.logger.info('starting new game')
-        // TODO warn user about overwriting existing game state
+        // TODO warn about overwriting existing game state
         this.newGame = true
     }
 
@@ -54,7 +60,7 @@ export class HomeComponent extends LoggerComponent implements OnInit {
 
     validateNewGameForm = () => {
         const newGameForm = this.newGameForm?.nativeElement
-        if (!this.newGameFormGroup.valid) this.logger.info('validation failed')
+        if (!this.newGameFormGroup.valid) this.logger.debug('validation failed')
         else this.startGame()
         newGameForm.classList.add('was-validated')
     }
@@ -80,16 +86,14 @@ export class HomeComponent extends LoggerComponent implements OnInit {
     }
 
     private startGame = () => {
-        this.logger.info('starting game')
-
-        const seed = this.newGameFormGroup.value.useCustomSeed
-            ? this.newGameFormGroup.value.customSeed
-            : Date.now() % 1000000
-        this.logger.debug('parameters', {
-            ...this.newGameFormGroup.value,
-            seed,
-        })
-
-        // TODO create new game state
+        this.logger.debug('starting game', { ...this.newGameFormGroup.value })
+        const seed =
+            this.newGameFormGroup.value.customSeed ?? Date.now() % 1000000
+        this.randomSvc.seed = String(seed)
+        this.gameSvc.createState(
+            this.newGameFormGroup.value.rounds,
+            this.newGameFormGroup.value.playersPerTeam
+        )
+        void this.router.navigateByUrl(RouteEnum.Game)
     }
 }

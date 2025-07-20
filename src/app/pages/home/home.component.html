@@ -1,16 +1,36 @@
-<div class="container d-flex vh-100 align-items-center justify-content-center">
-    <div class="row w-100 justify-content-center">
+<div class="container py-4">
+    <div class="row justify-content-center">
         <div class="col-lg-6">
             <div class="card">
                 <h3 class="card-header text-center">Poetry for Neanderthals</h3>
                 <div class="card-body">
                     @if (!newGame) {
                         <div class="text-center">
-                            <button class="btn btn-primary" (click)="continueGame()">Continue Game</button>
+                            <button class="btn btn-primary" [disabled]="true" (click)="continueGame()">Continue Game</button>
                             <button class="btn btn-success mx-2" (click)="startNewGame()">Start New Game</button>
                         </div>
                     } @else {
                         <form #newGameForm class="needs-validation" [formGroup]="newGameFormGroup" novalidate>
+                            <div class="mb-2">
+                                <label for="rounds">Rounds</label>
+                                <input
+                                    type="number"
+                                    id="rounds"
+                                    class="form-control"
+                                    formControlName="rounds"
+                                    required
+                                    [min]="1"
+                                    [max]="10"
+                                    (keypress)="handleNewGameFormKeypress($event)"
+                                />
+                                @if (newGameFormGroup.controls['rounds'].hasError('min') || newGameFormGroup.controls['rounds'].hasError('max')) {
+                                    <div class="invalid-feedback">Value must be between 1 and 10</div>
+                                }
+                            </div>
+                            <div class="mb-2">
+                                <label for="teams">Teams</label>
+                                <input type="number" id="teams" class="form-control" value="2" disabled />
+                            </div>
                             <div class="mb-2">
                                 <label for="playersPerTeam">Players Per Team</label>
                                 <input
@@ -26,22 +46,6 @@
                                 @if (
                                     newGameFormGroup.controls['playersPerTeam'].hasError('min') || newGameFormGroup.controls['playersPerTeam'].hasError('max')
                                 ) {
-                                    <div class="invalid-feedback">Value must be between 1 and 10</div>
-                                }
-                            </div>
-                            <div class="mb-2">
-                                <label for="rounds">Number of Rounds</label>
-                                <input
-                                    type="number"
-                                    id="rounds"
-                                    class="form-control"
-                                    formControlName="rounds"
-                                    required
-                                    [min]="1"
-                                    [max]="10"
-                                    (keypress)="handleNewGameFormKeypress($event)"
-                                />
-                                @if (newGameFormGroup.controls['rounds'].hasError('min') || newGameFormGroup.controls['rounds'].hasError('max')) {
                                     <div class="invalid-feedback">Value must be between 1 and 10</div>
                                 }
                             </div>
