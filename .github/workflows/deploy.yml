@@ -1,0 +1,84 @@
+name: Deploy Application
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - '.github/workflows/deploy.yml'
+            - 'public/**'
+            - 'src/**'
+            - 'angular.json'
+            - 'Dockerfile'
+            - '*.conf'
+            - 'package-lock.json'
+            - 'package.json'
+            - 'tsconfig.json'
+
+concurrency:
+    group: deploy-${{ github.ref_name }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+env:
+    NPM_CONFIG_USERCONFIG: /dev/null
+    REPO: $(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')
+    IMAGE_TAG: $(date +%Y-%m-%d).${{ github.run_number }}-${{ github.run_attempt }}-${{ github.run_id }}
+
+jobs:
+    deploy:
+        name: Deploy
+        runs-on: mbp-13
+        environment: prod
+        steps:
+            - name: unlock keychain
+              run: security unlock-keychain -p ${{ secrets.KEYCHAIN_PASSWORD }} login.keychain
+
+            - name: checkout
+              uses: actions/checkout@v4
+
+            - name: setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 'lts/*'
+                  check-latest: true
+                  cache: 'npm'
+                  cache-dependency-path: package-lock.json
+
+            - name: install, build
+              run: |
+                  npm config ls
+                  npm ci
+                  npm run build
+
+            - name: copy files
+              run: |
+                  mkdir stage
+                  cp -r nginx.conf dist stage/
+                  find stage -type f
+
+            - name: build, push docker image
+              working-directory: stage
+              run: |
+                  IMAGE=${{ secrets.DOCKER_REGISTRY }}/${{ env.REPO }}:${{ env.IMAGE_TAG }}
+                  docker build -t $IMAGE -f ../Dockerfile .
+                  docker push $IMAGE
+                  echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
+
+            - name: start docker
+              env:
+                  REPO: ${{ env.REPO }}
+                  IMAGE: ${{ env.IMAGE }}
+                  PORT: ${{ secrets.PORT }}
+              run: docker compose up -d
+
+            - name: configure, test, reload nginx
+              if: github.ref_name == 'main'
+              run: |
+                  sed -e "s/{PORT}/${{ secrets.PORT }}/g" \
+                    poetry-for-neanderthals.conf > poetry-for-neanderthals.conf.tmp
+                  mv poetry-for-neanderthals.conf.tmp poetry-for-neanderthals.conf
+                  cp poetry-for-neanderthals.conf /usr/local/etc/nginx/servers/
+                  nginx -t
+                  nginx -s reload
