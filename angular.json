@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "Poetry-for-Neanderthals": {
+        "poetry-for-neanderthals": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -40,6 +40,8 @@
                 "build": {
                     "builder": "@angular/build:application",
                     "options": {
+                        "outputPath": "dist",
+                        "index": "src/index.html",
                         "browser": "src/main.ts",
                         "polyfills": ["zone.js"],
                         "tsConfig": "tsconfig.json",
@@ -68,13 +70,13 @@
                             "budgets": [
                                 {
                                     "type": "initial",
-                                    "maximumWarning": "500kB",
-                                    "maximumError": "1MB"
+                                    "maximumWarning": "1MB",
+                                    "maximumError": "2MB"
                                 },
                                 {
                                     "type": "anyComponentStyle",
-                                    "maximumWarning": "4kB",
-                                    "maximumError": "8kB"
+                                    "maximumWarning": "200",
+                                    "maximumError": "500"
                                 }
                             ]
                         },
@@ -92,7 +94,7 @@
                     "builder": "@angular/build:dev-server",
                     "configurations": {
                         "dev": {
-                            "buildTarget": "Poetry-for-Neanderthals:build:dev"
+                            "buildTarget": "poetry-for-neanderthals:build:dev"
                         }
                     },
                     "defaultConfiguration": "dev"
