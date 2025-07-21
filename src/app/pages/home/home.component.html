@@ -43,14 +43,14 @@
                                     class="form-control"
                                     formControlName="playersPerTeam"
                                     required
-                                    [min]="1"
+                                    [min]="2"
                                     [max]="10"
                                     (keypress)="handleNewGameFormKeypress($event)"
                                 />
                                 @if (
                                     newGameFormGroup.controls['playersPerTeam'].hasError('min') || newGameFormGroup.controls['playersPerTeam'].hasError('max')
                                 ) {
-                                    <div class="invalid-feedback">Value must be between 1 and 10</div>
+                                    <div class="invalid-feedback">Value must be between 2 and 10</div>
                                 } @else if (newGameFormGroup.controls['playersPerTeam'].hasError('pattern')) {
                                     <div class="invalid-feedback">Value must be an integer</div>
                                 }
