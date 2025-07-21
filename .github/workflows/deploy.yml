@@ -23,8 +23,6 @@ permissions:
 
 env:
     NPM_CONFIG_USERCONFIG: /dev/null
-    REPO: $(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')
-    IMAGE_TAG: $(date +%Y-%m-%d).${{ github.run_number }}-${{ github.run_attempt }}-${{ github.run_id }}
 
 jobs:
     deploy:
@@ -57,6 +55,12 @@ jobs:
                   mkdir stage
                   cp -r nginx.conf dist stage/
                   find stage -type f
+
+            - name: initial vars
+              run: |
+                  VERSION=${{ github.run_number }}-${{ github.run_attempt }}-${{ github.run_id }}
+                  echo "REPO=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+                  echo "IMAGE_TAG=$(date +%Y-%m-%d).$VERSION" >> $GITHUB_ENV
 
             - name: build, push docker image
               working-directory: stage
