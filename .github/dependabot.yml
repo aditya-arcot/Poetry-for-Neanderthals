@@ -1,0 +1,34 @@
+version: 2
+updates:
+    - package-ecosystem: 'npm'
+      directory: '/'
+      schedule:
+          interval: 'weekly'
+      groups:
+          dependencies:
+              patterns:
+                  - '*'
+      assignees:
+          - 'aditya-arcot'
+
+    - package-ecosystem: 'docker'
+      directory: '/'
+      schedule:
+          interval: 'weekly'
+      groups:
+          docker:
+              patterns:
+                  - '*'
+      assignees:
+          - 'aditya-arcot'
+
+    - package-ecosystem: 'github-actions'
+      directory: '/'
+      schedule:
+          interval: 'weekly'
+      groups:
+          github-actions:
+              patterns:
+                  - '*'
+      assignees:
+          - 'aditya-arcot'
