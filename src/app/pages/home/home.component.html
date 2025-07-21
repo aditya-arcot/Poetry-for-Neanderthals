@@ -15,6 +15,7 @@
                                 <label for="rounds">Rounds</label>
                                 <input
                                     type="number"
+                                    pattern="\d+"
                                     id="rounds"
                                     class="form-control"
                                     formControlName="rounds"
@@ -25,6 +26,8 @@
                                 />
                                 @if (newGameFormGroup.controls['rounds'].hasError('min') || newGameFormGroup.controls['rounds'].hasError('max')) {
                                     <div class="invalid-feedback">Value must be between 1 and 10</div>
+                                } @else if (newGameFormGroup.controls['rounds'].hasError('pattern')) {
+                                    <div class="invalid-feedback">Value must be an integer</div>
                                 }
                             </div>
                             <div class="mb-2">
@@ -35,6 +38,7 @@
                                 <label for="playersPerTeam">Players Per Team</label>
                                 <input
                                     type="number"
+                                    pattern="\d+"
                                     id="playersPerTeam"
                                     class="form-control"
                                     formControlName="playersPerTeam"
@@ -47,6 +51,8 @@
                                     newGameFormGroup.controls['playersPerTeam'].hasError('min') || newGameFormGroup.controls['playersPerTeam'].hasError('max')
                                 ) {
                                     <div class="invalid-feedback">Value must be between 1 and 10</div>
+                                } @else if (newGameFormGroup.controls['playersPerTeam'].hasError('pattern')) {
+                                    <div class="invalid-feedback">Value must be an integer</div>
                                 }
                             </div>
                             <div class="mb-2">
@@ -63,6 +69,7 @@
                                 <input
                                     #customSeedInput
                                     type="number"
+                                    pattern="\d+"
                                     class="form-control"
                                     formControlName="customSeed"
                                     [required]="newGameFormGroup.controls['useCustomSeed'].value"
@@ -71,6 +78,8 @@
                                 />
                                 @if (newGameFormGroup.hasError('customSeedOutOfRange')) {
                                     <div class="invalid-feedback">Value must be between 0 and 999,999</div>
+                                } @else if (newGameFormGroup.controls['customSeed'].hasError('pattern')) {
+                                    <div class="invalid-feedback">Value must be an integer</div>
                                 }
                             </div>
                             <div class="text-center">
