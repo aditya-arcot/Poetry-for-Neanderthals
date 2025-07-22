@@ -9,6 +9,7 @@ import { LoggerComponent } from '../logger.component'
     templateUrl: './game-turn.component.html',
 })
 export class GameTurnComponent extends LoggerComponent {
+    @Input({ required: true }) turnTime = 0
     @Input({ required: true }) round = 0
     @Input({ required: true }) player = 0
     @Input({ required: true }) team = 0
@@ -18,7 +19,6 @@ export class GameTurnComponent extends LoggerComponent {
     }>()
 
     private readonly cardSvc = inject(CardService)
-    readonly turnTime = 60
 
     intro = true
     time = this.turnTime

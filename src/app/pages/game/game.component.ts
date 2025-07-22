@@ -53,6 +53,10 @@ export class GameComponent extends LoggerComponent implements OnInit {
         return state
     }
 
+    get turnTime() {
+        return this.gameState.turnTime
+    }
+
     get round() {
         return this.gameState.currentRound + 1
     }

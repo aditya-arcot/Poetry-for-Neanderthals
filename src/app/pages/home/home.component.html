@@ -31,6 +31,25 @@
                                 }
                             </div>
                             <div class="mb-2">
+                                <label for="turnTime">Time per Turn (s)</label>
+                                <input
+                                    type="number"
+                                    pattern="\d+"
+                                    id="turnTime"
+                                    class="form-control"
+                                    formControlName="turnTime"
+                                    required
+                                    [min]="15"
+                                    [max]="60"
+                                    (keypress)="handleNewGameFormKeypress($event)"
+                                />
+                                @if (newGameFormGroup.controls['turnTime'].hasError('min') || newGameFormGroup.controls['turnTime'].hasError('max')) {
+                                    <div class="invalid-feedback">Value must be between 15 and 60</div>
+                                } @else if (newGameFormGroup.controls['turnTime'].hasError('pattern')) {
+                                    <div class="invalid-feedback">Value must be an integer</div>
+                                }
+                            </div>
+                            <div class="mb-2">
                                 <label for="teams">Teams</label>
                                 <input type="number" id="teams" class="form-control" value="2" disabled />
                             </div>

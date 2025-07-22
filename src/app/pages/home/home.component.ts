@@ -30,6 +30,7 @@ export class HomeComponent extends LoggerComponent implements OnInit {
         this.newGameFormGroup = this.formBuilder.group(
             {
                 rounds: [3],
+                turnTime: [60],
                 playersPerTeam: [3],
                 useCustomSeed: [false],
                 customSeed: [null],
@@ -92,6 +93,7 @@ export class HomeComponent extends LoggerComponent implements OnInit {
         this.randomSvc.seed = String(seed)
         this.gameSvc.createState(
             this.newGameFormGroup.value.rounds,
+            this.newGameFormGroup.value.turnTime,
             this.newGameFormGroup.value.playersPerTeam
         )
         void this.router.navigateByUrl(RouteEnum.Game)

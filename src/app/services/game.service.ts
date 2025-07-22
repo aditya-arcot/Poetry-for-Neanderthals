@@ -14,10 +14,15 @@ export class GameService {
         this.logger = new LoggerService('GameService')
     }
 
-    createState = (rounds: number, playersPerTeam: number) => {
+    createState = (
+        rounds: number,
+        turnTime: number,
+        playersPerTeam: number
+    ) => {
         const teams = 2
         this.state = {
             rounds,
+            turnTime,
             teams,
             playersPerTeam,
             currentRound: 0,

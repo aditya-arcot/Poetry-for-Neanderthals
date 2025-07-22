@@ -2,6 +2,7 @@ import { GamePointsEnum } from '@enums'
 
 export interface GameState {
     rounds: number
+    turnTime: number
     teams: number
     playersPerTeam: number
 
