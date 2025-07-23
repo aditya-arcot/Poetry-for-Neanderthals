@@ -27,6 +27,16 @@ export class AlertService {
         else logger.info(message)
     }
 
+    addInfoAlert = (
+        logger: LoggerService,
+        message: string,
+        ...subtext: string[]
+    ): void => {
+        this.addAlert(AlertTypeEnum.Info, message, subtext)
+        if (subtext.length) logger.info(message, { subtext })
+        else logger.info(message)
+    }
+
     addErrorAlert = (
         logger: LoggerService,
         message: string,
@@ -54,7 +64,7 @@ export class AlertService {
             () => {
                 this.removeAlert(alert.id)
             },
-            alert.type === AlertTypeEnum.Success ? 5000 : 15000
+            alert.type === AlertTypeEnum.Error ? 15000 : 5000
         )
     }
 

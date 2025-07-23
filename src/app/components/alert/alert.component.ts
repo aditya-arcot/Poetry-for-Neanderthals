@@ -35,6 +35,8 @@ export class AlertComponent implements OnDestroy {
         switch (type) {
             case AlertTypeEnum.Success:
                 return 'alert-success'
+            case AlertTypeEnum.Info:
+                return 'alert-info'
             case AlertTypeEnum.Error:
                 return 'alert-danger'
         }
@@ -43,9 +45,11 @@ export class AlertComponent implements OnDestroy {
     getAlertIconClass = (type: AlertTypeEnum): string => {
         switch (type) {
             case AlertTypeEnum.Success:
-                return 'bi-check-circle-fill'
+                return 'bi-check-circle-fill me-2'
+            case AlertTypeEnum.Info:
+                return 'bi-info-circle-fill me-2'
             case AlertTypeEnum.Error:
-                return 'bi-exclamation-triangle-fill'
+                return 'bi-exclamation-triangle-fill me-2'
         }
     }
 }
