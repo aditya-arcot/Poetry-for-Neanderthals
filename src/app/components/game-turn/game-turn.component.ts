@@ -21,7 +21,7 @@ export class GameTurnComponent extends LoggerComponent {
     private readonly cardSvc = inject(CardService)
 
     intro = true
-    time = this.turnTime
+    time = 0
     cards: Card[] = []
     points: number[] = []
 
@@ -43,6 +43,7 @@ export class GameTurnComponent extends LoggerComponent {
     }
 
     startTurn = (): void => {
+        this.time = this.turnTime
         this.intro = false
         this.cards.push(this.cardSvc.getNextCard())
         this.logger.debug('starting turn', {
