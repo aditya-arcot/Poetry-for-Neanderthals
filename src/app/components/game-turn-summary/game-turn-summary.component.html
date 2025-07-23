@@ -1,17 +1,45 @@
 <div class="card-body">
     <div class="text-center mb-3">
-        <h4 class="mb-1">Turn Summary</h4>
+        <div class="position-relative mb-1">
+            <h4 class="mb-0">Turn Summary</h4>
+            @if (!editing) {
+                <button class="btn btn-warning btn-sm position-absolute top-right" type="button" title="Edit Turn" (click)="editTurn()">
+                    <i class="bi bi-pencil"></i>
+                    <span class="ms-2 d-none d-md-inline">Edit</span>
+                </button>
+            } @else {
+                <button class="btn btn-primary btn-sm position-absolute top-right" type="button" title="Save Turn" (click)="saveTurn()">
+                    <i class="bi bi-floppy"></i>
+                    <span class="ms-2 d-none d-md-inline">Save</span>
+                </button>
+            }
+        </div>
+
         <p class="mb-1"><span class="fw-bold">Total points:</span> {{ totalTurnPoints }}</p>
         @for (card of turnCards; track $index; let i = $index) {
             <div class="row text-center align-items-center">
-                <div class="col">
-                    <span [class]="getCardOnePointClass(i)">{{ card.onePoint }}</span>
+                <div class="col px-1 ps-2">
+                    <button
+                        [class]="getCardOnePointClass(i)"
+                        (click)="editCardPoints(gamePointsEnum.One, i)"
+                        [disabled]="!editing || i === turnCards.length - 1"
+                    >
+                        {{ card.onePoint }}
+                    </button>
                 </div>
-                <div class="col">
-                    <span [class]="getCardThreePointClass(i)">{{ card.threePoint }}</span>
+                <div class="col px-1">
+                    <button
+                        [class]="getCardThreePointClass(i)"
+                        (click)="editCardPoints(gamePointsEnum.Three, i)"
+                        [disabled]="!editing || i === turnCards.length - 1"
+                    >
+                        {{ card.threePoint }}
+                    </button>
                 </div>
-                <div class="col">
-                    <span [class]="getCardSkipClass(i)">Skip</span>
+                <div class="col px-1 pe-2">
+                    <button [class]="getCardSkipClass(i)" (click)="editCardPoints(gamePointsEnum.Skip, i)" [disabled]="!editing || i === turnCards.length - 1">
+                        Skip
+                    </button>
                 </div>
             </div>
             @if (i < turnCards.length - 1) {
@@ -21,8 +49,8 @@
     </div>
     <div class="text-center">
         <h4 class="mb-1">Scores</h4>
-        <p class="mb-0"><span class="fw-bold">Team 1:</span> {{ points[0] }}</p>
-        <p class="mb-2"><span class="fw-bold">Team 2:</span> {{ points[1] }}</p>
+        <p class="mb-0"><span class="fw-bold">Team 1:</span> {{ getTeamPoints(0) }}</p>
+        <p class="mb-2"><span class="fw-bold">Team 2:</span> {{ getTeamPoints(1) }}</p>
         <button class="btn btn-success" (click)="nextTurn.emit()">Continue</button>
     </div>
 </div>

@@ -1,0 +1,13 @@
+:host .btn-link {
+    all: unset;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+:host .btn-link:disabled {
+    cursor: text;
+}
+
+:host .row:last-child .btn-link.editing:disabled {
+    cursor: not-allowed;
+}

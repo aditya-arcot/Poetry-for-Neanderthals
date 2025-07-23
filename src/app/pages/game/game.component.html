@@ -6,9 +6,15 @@
                 @if (gameComponent === gameComponentEnum.Turn) {
                     <app-game-turn [turnTime]="turnTime" [round]="round" [player]="player" [team]="team" (turnDone)="handleTurnDone($event)" />
                 } @else if (gameComponent === gameComponentEnum.Summary) {
-                    <app-game-turn-summary [points]="gameState.scores" [turnPoints]="turnPoints" [turnCards]="turnCards" (nextTurn)="handleNextTurn()" />
+                    <app-game-turn-summary
+                        [scores]="gameState.scores"
+                        [teamIdx]="gameState.currentTeamIdx"
+                        [turnPoints]="turnPoints"
+                        [turnCards]="turnCards"
+                        (nextTurn)="handleNextTurn()"
+                    />
                 } @else {
-                    <app-game-summary [points]="gameState.scores" (endGame)="handleEndGame()" />
+                    <app-game-summary [scores]="gameState.scores" (endGame)="handleEndGame()" />
                 }
             </div>
         </div>

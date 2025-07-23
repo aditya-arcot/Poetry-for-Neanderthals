@@ -5,6 +5,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
     templateUrl: './game-summary.component.html',
 })
 export class GameSummaryComponent {
-    @Input({ required: true }) points: number[] = []
+    @Input({ required: true }) scores: number[] = []
     @Output() endGame = new EventEmitter<void>()
 }

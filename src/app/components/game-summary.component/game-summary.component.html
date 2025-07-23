@@ -1,12 +1,12 @@
 <div class="card-body">
     <div class="text-center">
         <h4 class="mb-1">Scores</h4>
-        <p class="mb-0"><span class="fw-bold">Team 1:</span> {{ points[0] }}</p>
-        <p class="mb-2"><span class="fw-bold">Team 2:</span> {{ points[1] }}</p>
+        <p class="mb-0"><span class="fw-bold">Team 1:</span> {{ scores[0] }}</p>
+        <p class="mb-2"><span class="fw-bold">Team 2:</span> {{ scores[1] }}</p>
         <div class="d-flex justify-content-center my-2">
-            @if (points[0] !== points[1]) {
+            @if (scores[0] !== scores[1]) {
                 <div class="text-primary-success bg-success-subtle border border-success-subtle rounded-3 p-3">
-                    🎉 <strong>Team {{ points[0] > points[1] ? '1' : '2' }}</strong> wins!
+                    🎉 <strong>Team {{ scores[0] > scores[1] ? '1' : '2' }}</strong> wins!
                 </div>
             } @else {
                 <div class="text-primary-warn bg-warning-subtle border border-warning-subtle rounded-3 p-3">🤝 It's a tie!</div>

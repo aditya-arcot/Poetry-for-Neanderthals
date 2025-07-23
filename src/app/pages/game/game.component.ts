@@ -40,16 +40,9 @@ export class GameComponent extends LoggerComponent implements OnInit {
         this.gameState.gameStarted = true
     }
 
-    shuffleArray(array: number[]) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1))
-            ;[array[i], array[j]] = [array[j], array[i]]
-        }
-    }
-
     get gameState() {
         const state = this.gameSvc.getState()
-        if (!state) throw Error('game state is not initialized')
+        if (!state) throw Error('failed to get game state')
         return state
     }
 
@@ -71,13 +64,14 @@ export class GameComponent extends LoggerComponent implements OnInit {
 
     handleTurnDone = (event: { points: number[]; cards: Card[] }): void => {
         this.turnPoints = event.points
-        this.gameState.scores[this.gameState.currentTeamIdx] +=
-            this.turnPoints.reduce((a, b) => a + b, 0)
         this.turnCards = event.cards
         this.gameComponent = GameComponentEnum.Summary
     }
 
     handleNextTurn = (): void => {
+        this.gameState.scores[this.gameState.currentTeamIdx] +=
+            this.turnPoints.reduce((a, b) => a + b, 0)
+
         if (this.gameState.currentTeamIdx !== this.gameState.teams - 1) {
             this.gameState.currentTeamIdx++
         } else {
