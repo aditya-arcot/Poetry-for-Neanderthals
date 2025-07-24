@@ -58,18 +58,21 @@ export class AlertService {
             message: capitalizeFirstLetter(message.trim()),
             subtext: subtext.map((s) => capitalizeFirstLetter(s.trim())),
         }
-        this.alerts.push(alert)
-        this.alertSubject.next([...this.alerts])
-        setTimeout(
-            () => {
-                this.removeAlert(alert.id)
-            },
+        const timeout = setTimeout(
+            () => this.removeAlert(alert.id),
             alert.type === AlertTypeEnum.Error ? 15000 : 5000
         )
+        alert.timeout = timeout
+        this.alerts.push(alert)
+        this.alertSubject.next([...this.alerts])
     }
 
     removeAlert = (id: string): void => {
-        this.alerts = this.alerts.filter((n) => n.id !== id)
+        const alertIdx = this.alerts.findIndex((n) => n.id === id)
+        if (alertIdx === -1) return
+        const alert = this.alerts[alertIdx]
+        if (alert.timeout) clearTimeout(alert.timeout)
+        this.alerts.splice(alertIdx, 1)
         this.alertSubject.next([...this.alerts])
     }
 }

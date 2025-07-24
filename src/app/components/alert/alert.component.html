@@ -1,17 +1,17 @@
-<div class="alerts mb-2">
+<div class="alerts m-1">
     @for (alert of alerts.slice().reverse(); track $index) {
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-6">
-                    <div class="m-2 mb-0 p-3 alert alert-dismissible" [ngClass]="getAlertClass(alert.type)" role="alert">
-                        <div class="d-flex align-items-center">
-                            <i class="bi me-1" [ngClass]="getAlertIconClass(alert.type)"></i>
-                            <strong>{{ alert.message }}</strong>
-                            <button type="button" class="btn-close" (click)="removeAlert(alert.id)" title="Close Alert"></button>
-                        </div>
+                    <div class="alert alert-dismissible fade show my-1" [ngClass]="getAlertClass(alert.type)" role="alert">
+                        <strong>{{ alert.message }}</strong>
+                        @if (alert.subtext.length) {
+                            <hr class="my-2" />
+                        }
                         @for (line of alert.subtext; track $index) {
                             <p>{{ line }}</p>
                         }
+                        <button type="button" class="btn-close" title="Close Alert" data-bs-dismiss="alert" (click)="removeAlert(alert.id)"></button>
                     </div>
                 </div>
             </div>
