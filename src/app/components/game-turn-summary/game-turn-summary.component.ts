@@ -46,18 +46,31 @@ export class GameTurnSummaryComponent
         this.editing = true
         this.alertSvc.addInfoAlert(
             this.logger,
-            'Click on a word to select its points for the card',
-            'The last card is not considered a skip and cannot be edited'
+            'Editing turn',
+            'Select the 1-point word, 3-point phrase, or skip for each card',
+            'The last card is used to end the turn and cannot be edited'
         )
     }
 
     saveTurn = () => {
         this.editing = false
-        this.alertSvc.addSuccessAlert(this.logger, 'Successfully saved turn')
+        this.alertSvc.addSuccessAlert(this.logger, 'Saved turn')
     }
 
     editCardPoints = (gamePointsEnum: GamePointsEnum, cardIdx: number) => {
         this.turnPoints[cardIdx] = gamePointsEnum
+    }
+
+    continue = () => {
+        if (this.editing) {
+            this.alertSvc.addErrorAlert(
+                this.logger,
+                'Cannot continue while editing turn',
+                'Please save your edits before continuing'
+            )
+            return
+        }
+        this.nextTurn.emit()
     }
 
     get totalTurnPoints(): number {
