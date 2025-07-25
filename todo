@@ -1,4 +1,5 @@
-add rules
 prevent reusing cards until all cards used
-reduce log messages to essential
 add pre-commit hook to check object version bump
+display saved game state
+add pause functionality
+add return to home button
