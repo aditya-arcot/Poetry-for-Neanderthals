@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common'
 import {
     AfterViewInit,
     Component,
@@ -20,7 +19,7 @@ import { GameService, RandomService } from '@services'
 import { Modal } from 'bootstrap'
 
 @Component({
-    imports: [ReactiveFormsModule, JsonPipe],
+    imports: [ReactiveFormsModule],
     templateUrl: './home.component.html',
 })
 export class HomeComponent
