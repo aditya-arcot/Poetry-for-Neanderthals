@@ -83,7 +83,6 @@ export class HomeComponent
     startNewGame = () => {
         this.logger.info('starting new game')
         this.newGame = true
-        this.gameSvc.clearGameState()
     }
 
     handleNewGameFormKeypress = (event: KeyboardEvent) => {
