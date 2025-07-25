@@ -26,9 +26,13 @@
                             <a href="https://dumekj556jp75.cloudfront.net/poetry-for-neanderthals/poetry-for-neanderthals-rules.pdf" target="_blank">here</a>.
                         </p>
                         <p class="text-center mb-">Select an option below to start playing!</p>
-                        <div class="text-center">
-                            <button class="btn btn-primary" [disabled]="!savedGame" (click)="continueGame()">Continue Game</button>
-                            <button class="btn btn-success mx-2" (click)="tryStartNewGame()">Start New Game</button>
+                        <div class="row text-center">
+                            <div class="col-md d-md-flex justify-content-end mb-2 mb-md-0 px-1">
+                                <button class="btn btn-primary" [disabled]="!savedGame" (click)="continueGame()">Continue Game</button>
+                            </div>
+                            <div class="col-md d-md-flex justify-content-start px-1">
+                                <button class="btn btn-success" (click)="tryStartNewGame()">Start New Game</button>
+                            </div>
                         </div>
                     } @else {
                         <form #newGameForm class="needs-validation" [formGroup]="newGameFormGroup" novalidate>
