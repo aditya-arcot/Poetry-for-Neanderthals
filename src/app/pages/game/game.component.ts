@@ -71,11 +71,12 @@ export class GameComponent extends LoggerComponent implements OnInit {
         } else {
             if (player !== playersPerTeam - 1) {
                 player++
+                team = 0
             } else {
                 if (round !== this.gameState.settings.rounds - 1) {
+                    round++
                     player = 0
                     team = 0
-                    round++
                 } else {
                     gameOver = true
                 }
