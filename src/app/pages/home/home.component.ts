@@ -1,4 +1,12 @@
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core'
+import { JsonPipe } from '@angular/common'
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    inject,
+    OnInit,
+    ViewChild,
+} from '@angular/core'
 import {
     AbstractControl,
     FormBuilder,
@@ -9,28 +17,35 @@ import { Router } from '@angular/router'
 import { LoggerComponent } from '@components'
 import { RouteEnum } from '@enums'
 import { GameService, RandomService } from '@services'
+import { Modal } from 'bootstrap'
 
 @Component({
-    imports: [ReactiveFormsModule],
+    imports: [ReactiveFormsModule, JsonPipe],
     templateUrl: './home.component.html',
 })
-export class HomeComponent extends LoggerComponent implements OnInit {
+export class HomeComponent
+    extends LoggerComponent
+    implements OnInit, AfterViewInit
+{
     private readonly formBuilder = inject(FormBuilder)
     private readonly gameSvc = inject(GameService)
     private readonly randomSvc = inject(RandomService)
     private readonly router = inject(Router)
 
+    private modalInstance!: Modal
+
     @ViewChild('newGameForm') newGameForm!: ElementRef<HTMLFormElement>
     newGameFormGroup: FormGroup
 
+    savedGame = false
     newGame = false
 
     constructor() {
         super('HomeComponent')
         this.newGameFormGroup = this.formBuilder.group(
             {
-                rounds: [3],
                 turnTime: [60],
+                rounds: [3],
                 playersPerTeam: [3],
                 useCustomSeed: [false],
                 customSeed: [null],
@@ -40,19 +55,36 @@ export class HomeComponent extends LoggerComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // TODO check existing game state
-        this.newGame = false
+        if (this.gameSvc.gameState) {
+            this.logger.debug('found existing game state')
+            this.savedGame = true
+        }
+    }
+
+    ngAfterViewInit(): void {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const modalElement = document.getElementById('modal')!
+        this.modalInstance = new Modal(modalElement)
     }
 
     continueGame = () => {
         this.logger.info('continuing existing game')
-        // TODO restore game state
+        void this.router.navigateByUrl(RouteEnum.Game)
+    }
+
+    tryStartNewGame = () => {
+        this.logger.info('trying to start new game')
+        if (!this.savedGame) {
+            this.startNewGame()
+            return
+        }
+        this.modalInstance.show()
     }
 
     startNewGame = () => {
         this.logger.info('starting new game')
-        // TODO warn about overwriting existing game state
         this.newGame = true
+        this.gameSvc.clearGameState()
     }
 
     handleNewGameFormKeypress = (event: KeyboardEvent) => {
@@ -88,13 +120,16 @@ export class HomeComponent extends LoggerComponent implements OnInit {
 
     private startGame = () => {
         this.logger.debug('starting game', { ...this.newGameFormGroup.value })
-        const seed =
+        const seed = String(
             this.newGameFormGroup.value.customSeed ?? Date.now() % 1000000
-        this.randomSvc.seed = String(seed)
-        this.gameSvc.createState(
-            this.newGameFormGroup.value.rounds,
+        )
+        this.randomSvc.seed = seed
+        this.gameSvc.createGameState(
             this.newGameFormGroup.value.turnTime,
-            this.newGameFormGroup.value.playersPerTeam
+            this.newGameFormGroup.value.rounds,
+            2, // teams
+            this.newGameFormGroup.value.playersPerTeam,
+            seed
         )
         void this.router.navigateByUrl(RouteEnum.Game)
     }

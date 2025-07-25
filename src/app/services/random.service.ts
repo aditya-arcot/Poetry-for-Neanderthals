@@ -5,12 +5,19 @@ import seedrandom from 'seedrandom'
     providedIn: 'root',
 })
 export class RandomService {
-    private _seed: string | null = null
     private rng: seedrandom.PRNG | null = null
 
     set seed(seed: string) {
-        this._seed = seed
-        this.rng = seedrandom(this._seed)
+        this.rng = seedrandom(seed, { state: true })
+    }
+
+    get rngState(): seedrandom.State.Arc4 | null {
+        // @ts-expect-error state is defined
+        return this.rng ? this.rng.state() : null
+    }
+
+    setRngFromState(state: seedrandom.State.Arc4): void {
+        this.rng = seedrandom('', { state })
     }
 
     // generates random integer between min and max (inclusive)

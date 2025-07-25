@@ -1,6 +1,6 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core'
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core'
 import { Card } from '@models'
-import { CardService } from '@services'
+import { GameService } from '@services'
 // eslint-disable-next-line no-restricted-imports
 import { LoggerComponent } from '../logger.component'
 
@@ -8,25 +8,63 @@ import { LoggerComponent } from '../logger.component'
     selector: 'app-game-turn',
     templateUrl: './game-turn.component.html',
 })
-export class GameTurnComponent extends LoggerComponent {
-    @Input({ required: true }) turnTime = 0
-    @Input({ required: true }) round = 0
-    @Input({ required: true }) player = 0
-    @Input({ required: true }) team = 0
-    @Output() turnDone = new EventEmitter<{
-        points: number[]
-        cards: Card[]
-    }>()
+export class GameTurnComponent extends LoggerComponent implements OnInit {
+    @Output() turnDone = new EventEmitter<void>()
 
-    private readonly cardSvc = inject(CardService)
+    private readonly gameSvc = inject(GameService)
 
-    intro = true
-    time = 0
-    cards: Card[] = []
-    points: number[] = []
+    introScreen = true
+    resumeScreen = false
 
     constructor() {
         super('GameTurnComponent')
+    }
+
+    ngOnInit(): void {
+        this.introScreen = this.gameState.gameplay.turn.timeRemaining < 1
+        if (!this.introScreen) {
+            this.resumeScreen = true
+        }
+    }
+
+    get gameState() {
+        const state = this.gameSvc.gameState
+        if (!state) throw Error('failed to get game state')
+        return state
+    }
+
+    get timeRemaining(): number {
+        return this.gameState.gameplay.turn.timeRemaining
+    }
+
+    get timeRemainingString(): string {
+        const time = this.timeRemaining
+        if (time == 1) return '1 second'
+        return `${time} seconds`
+    }
+
+    get turnTime(): number {
+        return this.gameState.settings.turnTime
+    }
+
+    get round(): number {
+        return this.gameState.gameplay.round
+    }
+
+    get player(): number {
+        return this.gameState.gameplay.player
+    }
+
+    get team(): number {
+        return this.gameState.gameplay.team
+    }
+
+    get points(): number[] {
+        return this.gameState.gameplay.turn.points
+    }
+
+    get cards(): Card[] {
+        return this.gameState.gameplay.turn.cards
     }
 
     get card(): Card {
@@ -42,28 +80,59 @@ export class GameTurnComponent extends LoggerComponent {
         return this.card.threePoint
     }
 
-    startTurn = (): void => {
-        this.time = this.turnTime
-        this.intro = false
-        this.cards.push(this.cardSvc.getNextCard())
+    resumeTurn = () => {
+        this.resumeScreen = false
+        this.startTurn(false)
+    }
+
+    startTurn = (newTurn = true): void => {
+        this.introScreen = false
+
+        if (newTurn) {
+            this.gameSvc.updateGameState({
+                gameplay: {
+                    turn: {
+                        timeRemaining: this.turnTime,
+                        cards: [this.gameSvc.getNextCard()],
+                    },
+                },
+            })
+        }
+
         this.logger.debug('starting turn', {
+            newTurn,
             points: this.points,
             cards: this.cards,
         })
 
         const interval = setInterval(() => {
-            this.time--
-            if (this.time <= 0) {
+            this.gameSvc.updateGameState({
+                gameplay: {
+                    turn: {
+                        timeRemaining: this.timeRemaining - 1,
+                    },
+                },
+            })
+            if (this.timeRemaining < 1) {
                 clearInterval(interval)
-                this.logger.debug('ending turn', { points: this.points })
-                this.turnDone.emit({ points: this.points, cards: this.cards })
+                this.logger.debug('ending turn', {
+                    points: this.points,
+                    cards: this.cards,
+                })
+                this.turnDone.emit()
             }
         }, 1000)
     }
 
     advance = (points: number): void => {
-        this.points.push(points)
-        this.cards.push(this.cardSvc.getNextCard())
+        this.gameSvc.updateGameState({
+            gameplay: {
+                turn: {
+                    points: [...this.points, points],
+                    cards: [...this.cards, this.gameSvc.getNextCard()],
+                },
+            },
+        })
         this.logger.debug('advancing turn', {
             points: this.points,
             cards: this.cards,

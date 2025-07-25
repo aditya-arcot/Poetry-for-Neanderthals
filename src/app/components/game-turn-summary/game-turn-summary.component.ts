@@ -1,14 +1,7 @@
-import {
-    Component,
-    EventEmitter,
-    inject,
-    Input,
-    OnInit,
-    Output,
-} from '@angular/core'
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core'
 import { GamePointsEnum } from '@enums'
 import { Card, gamePointsCategoryMap } from '@models'
-import { AlertService } from '@services'
+import { AlertService, GameService } from '@services'
 // eslint-disable-next-line no-restricted-imports
 import { LoggerComponent } from '../logger.component'
 
@@ -21,29 +14,60 @@ export class GameTurnSummaryComponent
     extends LoggerComponent
     implements OnInit
 {
-    @Input({ required: true }) scores: number[] = []
-    @Input({ required: true }) teamIdx = 0
-    @Input({ required: true }) turnPoints: number[] = []
-    @Input({ required: true }) turnCards: Card[] = []
     @Output() nextTurn = new EventEmitter<void>()
 
     private readonly alertSvc = inject(AlertService)
+    private readonly gameSvc = inject(GameService)
 
     readonly gamePointsEnum = GamePointsEnum
-    editing = false
-    buttonClasses = ['btn', 'btn-link']
 
     constructor() {
         super('GameTurnSummaryComponent')
     }
 
     ngOnInit(): void {
-        if (this.turnPoints.length !== this.turnCards.length - 1)
+        if (this.points.length !== this.cards.length - 1)
             throw Error('turn points and cards mismatch')
     }
 
+    get gameState() {
+        const state = this.gameSvc.gameState
+        if (!state) throw Error('failed to get game state')
+        return state
+    }
+
+    get team(): number {
+        return this.gameState.gameplay.team
+    }
+
+    get teams(): number {
+        return this.gameState.settings.teams
+    }
+
+    get scores(): number[] {
+        return this.gameState.gameplay.scores
+    }
+
+    get isEditing(): boolean {
+        return this.gameState.gameplay.turn.isEditing
+    }
+
+    get points(): number[] {
+        return this.gameState.gameplay.turn.points
+    }
+
+    get cards(): Card[] {
+        return this.gameState.gameplay.turn.cards
+    }
+
     editTurn = () => {
-        this.editing = true
+        this.gameSvc.updateGameState({
+            gameplay: {
+                turn: {
+                    isEditing: true,
+                },
+            },
+        })
         this.alertSvc.addInfoAlert(
             this.logger,
             'Editing turn',
@@ -53,16 +77,29 @@ export class GameTurnSummaryComponent
     }
 
     saveTurn = () => {
-        this.editing = false
+        this.gameSvc.updateGameState({
+            gameplay: {
+                turn: {
+                    isEditing: false,
+                },
+            },
+        })
         this.alertSvc.addSuccessAlert(this.logger, 'Saved turn')
     }
 
     editCardPoints = (gamePointsEnum: GamePointsEnum, cardIdx: number) => {
-        this.turnPoints[cardIdx] = gamePointsEnum
+        this.points[cardIdx] = gamePointsEnum
+        this.gameSvc.updateGameState({
+            gameplay: {
+                turn: {
+                    points: this.points,
+                },
+            },
+        })
     }
 
     continue = () => {
-        if (this.editing) {
+        if (this.isEditing) {
             this.alertSvc.addErrorAlert(
                 this.logger,
                 'Cannot continue while editing turn',
@@ -74,7 +111,7 @@ export class GameTurnSummaryComponent
     }
 
     get totalTurnPoints(): number {
-        return this.turnPoints.reduce((acc, points) => acc + points, 0)
+        return this.points.reduce((acc, points) => acc + points, 0)
     }
 
     getCardOnePointClass = (cardIdx: number): string => {
@@ -89,23 +126,20 @@ export class GameTurnSummaryComponent
         return this.getCardCategoryClass(cardIdx, GamePointsEnum.Skip)
     }
 
-    getTeamPoints = (teamIdx: number): number => {
-        if (teamIdx === this.teamIdx) {
-            return this.scores[teamIdx] + this.totalTurnPoints
+    getTeamScore = (team: number): number => {
+        if (team === this.team) {
+            return this.scores[team] + this.totalTurnPoints
         }
-        return this.scores[teamIdx]
+        return this.scores[team]
     }
 
     private getCardCategoryClass = (
         cardIdx: number,
         pointsEnum: GamePointsEnum
     ): string => {
-        const classes = [...this.buttonClasses]
-        if (this.editing) classes.push('editing')
-        if (
-            cardIdx < this.turnPoints.length &&
-            this.turnPoints[cardIdx] === pointsEnum
-        )
+        const classes = ['btn', 'btn-link']
+        if (this.isEditing) classes.push('editing')
+        if (cardIdx < this.points.length && this.points[cardIdx] === pointsEnum)
             classes.push(...this.getSelectedClasses(pointsEnum))
         else classes.push('text-body-tertiary')
         return classes.join(' ')

@@ -6,8 +6,7 @@ import {
     GameTurnSummaryComponent,
     LoggerComponent,
 } from '@components'
-import { GameComponentEnum, RouteEnum } from '@enums'
-import { Card } from '@models'
+import { RouteEnum } from '@enums'
 import { GameService } from '@services'
 
 @Component({
@@ -22,81 +21,86 @@ export class GameComponent extends LoggerComponent implements OnInit {
     private readonly gameSvc = inject(GameService)
     private readonly router = inject(Router)
 
-    readonly gameComponentEnum = GameComponentEnum
-
-    gameComponent: GameComponentEnum = GameComponentEnum.Turn
-    turnPoints: number[] = []
-    turnCards: Card[] = []
-
     constructor() {
         super('GameComponent')
     }
 
     ngOnInit(): void {
-        if (!this.gameSvc.getState()) {
+        if (!this.gameSvc.gameState) {
             void this.router.navigateByUrl(RouteEnum.Home)
             return
         }
-        this.gameState.gameStarted = true
     }
 
     get gameState() {
-        const state = this.gameSvc.getState()
+        const state = this.gameSvc.gameState
         if (!state) throw Error('failed to get game state')
         return state
     }
 
-    get turnTime() {
-        return this.gameState.turnTime
-    }
-
-    get round() {
-        return this.gameState.currentRound + 1
-    }
-
-    get player() {
-        return this.gameState.currentPlayerIdx + 1
-    }
-
-    get team() {
-        return this.gameState.currentTeamIdx + 1
-    }
-
-    handleTurnDone = (event: { points: number[]; cards: Card[] }): void => {
-        this.turnPoints = event.points
-        this.turnCards = event.cards
-        this.gameComponent = GameComponentEnum.Summary
+    handleTurnDone = (): void => {
+        this.gameSvc.updateGameState({
+            gameplay: {
+                turn: {
+                    isDone: true,
+                    isEditing: false,
+                    timeRemaining: 0,
+                },
+            },
+        })
     }
 
     handleNextTurn = (): void => {
-        this.gameState.scores[this.gameState.currentTeamIdx] +=
-            this.turnPoints.reduce((a, b) => a + b, 0)
+        const scores = this.gameState.gameplay.scores
+        const turnPoints = this.gameState.gameplay.turn.points
+        scores[this.gameState.gameplay.team] += turnPoints.reduce(
+            (a, b) => a + b,
+            0
+        )
 
-        if (this.gameState.currentTeamIdx !== this.gameState.teams - 1) {
-            this.gameState.currentTeamIdx++
+        const teams = this.gameState.settings.teams
+        const playersPerTeam = this.gameState.settings.playersPerTeam
+
+        let round = this.gameState.gameplay.round
+        let team = this.gameState.gameplay.team
+        let player = this.gameState.gameplay.player
+        let gameOver = this.gameState.gameplay.gameOver
+
+        if (team !== teams - 1) {
+            team++
         } else {
-            if (
-                this.gameState.currentPlayerIdx !==
-                this.gameState.playersPerTeam - 1
-            ) {
-                this.gameState.currentPlayerIdx++
+            if (player !== playersPerTeam - 1) {
+                player++
             } else {
-                if (this.gameState.currentRound !== this.gameState.rounds - 1) {
-                    this.gameState.currentPlayerIdx = 0
-                    this.gameState.currentTeamIdx = 0
-                    this.gameState.currentRound++
+                if (round !== this.gameState.settings.rounds - 1) {
+                    player = 0
+                    team = 0
+                    round++
                 } else {
-                    this.gameState.gameOver = true
-                    this.gameComponent = GameComponentEnum.End
-                    return
+                    gameOver = true
                 }
             }
         }
-        this.gameComponent = GameComponentEnum.Turn
+
+        this.gameSvc.updateGameState({
+            gameplay: {
+                round,
+                team,
+                player,
+                scores,
+                gameOver,
+                turn: {
+                    isDone: false,
+                    isEditing: false,
+                    points: [],
+                    cards: [],
+                },
+            },
+        })
     }
 
     handleEndGame = (): void => {
-        this.gameSvc.clearState()
+        this.gameSvc.clearGameState()
         void this.router.navigateByUrl(RouteEnum.Home)
     }
 }

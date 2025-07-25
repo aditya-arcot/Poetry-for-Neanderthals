@@ -1,3 +1,4 @@
 add rules
 prevent reusing cards until all cards used
-implement continue game
+reduce log messages to essential
+add pre-commit hook to check object version bump

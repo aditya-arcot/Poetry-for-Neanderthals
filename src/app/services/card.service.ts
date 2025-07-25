@@ -81,7 +81,8 @@ export class CardService {
         this.cards = cards
     }
 
-    getNextCard = (): Card => {
+    // should only be called by GameService
+    _getNextCard = (): Card => {
         if (this.cards.length === 0) throw Error('no cards available')
         const idx = this.randomSvc.getRandomInt(0, this.cards.length - 1)
         this.logger.debug(`selected card at index ${idx}`)

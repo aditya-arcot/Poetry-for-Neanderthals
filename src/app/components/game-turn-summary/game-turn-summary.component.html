@@ -2,7 +2,7 @@
     <div class="text-center mb-3">
         <div class="position-relative mb-1">
             <h4 class="mb-0">Turn Summary</h4>
-            @if (!editing) {
+            @if (!isEditing) {
                 <button class="btn btn-warning btn-sm position-absolute top-right" type="button" title="Edit Turn" (click)="editTurn()">
                     <i class="bi bi-pencil"></i>
                     <span class="ms-2 d-none d-md-inline">Edit</span>
@@ -16,14 +16,10 @@
         </div>
 
         <p class="mb-1"><span class="fw-bold">Total points:</span> {{ totalTurnPoints }}</p>
-        @for (card of turnCards; track $index; let i = $index) {
+        @for (card of cards; track $index; let i = $index) {
             <div class="row text-center align-items-center">
                 <div class="col px-1 ps-2">
-                    <button
-                        [class]="getCardOnePointClass(i)"
-                        (click)="editCardPoints(gamePointsEnum.One, i)"
-                        [disabled]="!editing || i === turnCards.length - 1"
-                    >
+                    <button [class]="getCardOnePointClass(i)" (click)="editCardPoints(gamePointsEnum.One, i)" [disabled]="!isEditing || i === cards.length - 1">
                         {{ card.onePoint }}
                     </button>
                 </div>
@@ -31,26 +27,29 @@
                     <button
                         [class]="getCardThreePointClass(i)"
                         (click)="editCardPoints(gamePointsEnum.Three, i)"
-                        [disabled]="!editing || i === turnCards.length - 1"
+                        [disabled]="!isEditing || i === cards.length - 1"
                     >
                         {{ card.threePoint }}
                     </button>
                 </div>
                 <div class="col px-1 pe-2">
-                    <button [class]="getCardSkipClass(i)" (click)="editCardPoints(gamePointsEnum.Skip, i)" [disabled]="!editing || i === turnCards.length - 1">
+                    <button [class]="getCardSkipClass(i)" (click)="editCardPoints(gamePointsEnum.Skip, i)" [disabled]="!isEditing || i === cards.length - 1">
                         Skip
                     </button>
                 </div>
             </div>
-            @if (i < turnCards.length - 1) {
+            @if (i < cards.length - 1) {
                 <hr class="my-1" />
             }
         }
     </div>
     <div class="text-center">
         <h4 class="mb-1">Scores</h4>
-        <p class="mb-0"><span class="fw-bold">Team 1:</span> {{ getTeamPoints(0) }}</p>
-        <p class="mb-2"><span class="fw-bold">Team 2:</span> {{ getTeamPoints(1) }}</p>
+        @for (score of scores; track $index) {
+            <p class="mb-0" [class.mb-2]="$index === teams - 1">
+                <span class="fw-bold">Team {{ $index + 1 }}:</span> {{ getTeamScore($index) }}
+            </p>
+        }
         <button class="btn btn-success" (click)="continue()">Continue</button>
     </div>
 </div>

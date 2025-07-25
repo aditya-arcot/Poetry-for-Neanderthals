@@ -3,18 +3,12 @@
         <div class="col-lg-6">
             <div class="card">
                 <h3 class="card-header text-center">Poetry for Neanderthals</h3>
-                @if (gameComponent === gameComponentEnum.Turn) {
-                    <app-game-turn [turnTime]="turnTime" [round]="round" [player]="player" [team]="team" (turnDone)="handleTurnDone($event)" />
-                } @else if (gameComponent === gameComponentEnum.Summary) {
-                    <app-game-turn-summary
-                        [scores]="gameState.scores"
-                        [teamIdx]="gameState.currentTeamIdx"
-                        [turnPoints]="turnPoints"
-                        [turnCards]="turnCards"
-                        (nextTurn)="handleNextTurn()"
-                    />
+                @if (gameState.gameplay.gameOver) {
+                    <app-game-summary (endGame)="handleEndGame()" />
+                } @else if (gameState.gameplay.turn.isDone) {
+                    <app-game-turn-summary (nextTurn)="handleNextTurn()" />
                 } @else {
-                    <app-game-summary [scores]="gameState.scores" (endGame)="handleEndGame()" />
+                    <app-game-turn (turnDone)="handleTurnDone()" />
                 }
             </div>
         </div>

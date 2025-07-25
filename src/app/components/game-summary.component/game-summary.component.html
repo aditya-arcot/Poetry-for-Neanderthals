@@ -1,15 +1,20 @@
 <div class="card-body">
     <div class="text-center">
         <h4 class="mb-1">Scores</h4>
-        <p class="mb-0"><span class="fw-bold">Team 1:</span> {{ scores[0] }}</p>
-        <p class="mb-2"><span class="fw-bold">Team 2:</span> {{ scores[1] }}</p>
+        @for (score of scores; track $index) {
+            <p class="mb-0" [class.mb-2]="$index === teams - 1">
+                <span class="fw-bold">Team {{ $index + 1 }}:</span> {{ score }}
+            </p>
+        }
         <div class="d-flex justify-content-center my-2">
-            @if (scores[0] !== scores[1]) {
-                <div class="text-primary-success bg-success-subtle border border-success-subtle rounded-3 p-3">
-                    🎉 <strong>Team {{ scores[0] > scores[1] ? '1' : '2' }}</strong> wins!
+            @if (tie) {
+                <div class="text-primary-warn bg-warning-subtle border border-warning-subtle rounded-3 p-3">
+                    🤝<span class="ms-2">It's a {{ winners.length }}-way tie!</span>
                 </div>
             } @else {
-                <div class="text-primary-warn bg-warning-subtle border border-warning-subtle rounded-3 p-3">🤝 It's a tie!</div>
+                <div class="text-primary-success bg-success-subtle border border-success-subtle rounded-3 p-3">
+                    🎉<strong class="ms-2">Team {{ winners[0] + 1 }}</strong> wins!
+                </div>
             }
         </div>
         <button class="btn btn-danger" (click)="endGame.emit()">End Game</button>

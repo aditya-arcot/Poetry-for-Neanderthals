@@ -1,12 +1,21 @@
-@if (intro) {
+@if (introScreen || resumeScreen) {
     <div class="card-body">
-        <h5 class="text-center mb-2">Round {{ round }}</h5>
+        @if (resumeScreen) {
+            <h4 class="text-center mb-2">Game Paused</h4>
+            <p class="text-center mb-1">{{ timeRemainingString }} remaining</p>
+            <hr />
+        }
+        <h5 class="text-center mb-2">Round {{ round + 1 }}</h5>
         <p class="text-center mb-1">
-            Hand the device to player <strong>{{ player }}</strong> on team <strong>{{ team }}</strong>
+            Hand the device to player <strong>{{ player + 1 }}</strong> on team <strong>{{ team + 1 }}</strong>
         </p>
         <p class="text-center mb-2">Remember: <span class="fst-italic">only use one-syllable words</span></p>
         <div class="text-center">
-            <button class="btn btn-success" (click)="startTurn()">Start Turn</button>
+            @if (introScreen) {
+                <button class="btn btn-success" (click)="startTurn()">Start Turn</button>
+            } @else {
+                <button class="btn btn-success" (click)="resumeTurn()">Resume Turn</button>
+            }
         </div>
     </div>
 } @else {
@@ -28,10 +37,10 @@
         <div
             class="progress my-2"
             role="progressbar"
-            [style.width.%]="(time / turnTime) * 100"
-            [class.bg-danger]="time <= 0.1 * turnTime"
-            [class.bg-warning]="time > 0.1 * turnTime && time <= 0.25 * turnTime"
-            [class.bg-success]="time > 0.25 * turnTime"
+            [style.width.%]="(timeRemaining / turnTime) * 100"
+            [class.bg-danger]="timeRemaining <= 0.1 * turnTime"
+            [class.bg-warning]="timeRemaining > 0.1 * turnTime && timeRemaining <= 0.25 * turnTime"
+            [class.bg-success]="timeRemaining > 0.25 * turnTime"
         ></div>
     </div>
 }
