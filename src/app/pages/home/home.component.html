@@ -19,13 +19,13 @@
                 <h3 class="card-header text-center">Poetry for Neanderthals</h3>
                 <div class="card-body">
                     @if (!newGame) {
-                        <h4 class="text-center mb-2">Welcome to <strong>Poetry for Neanderthals</strong>!</h4>
-                        <p class="text-center mb-1">This is a multiplayer game for an even number of players.</p>
+                        <h5 class="text-center mb-2">Welcome!</h5>
+                        <p class="text-center mb-1">Gather an even number of players.</p>
                         <p class="text-center mb-1">
-                            If you don't know how to play, check out the rules
+                            Check out the rules
                             <a href="https://dumekj556jp75.cloudfront.net/poetry-for-neanderthals/poetry-for-neanderthals-rules.pdf" target="_blank">here</a>.
                         </p>
-                        <p class="text-center mb-">Select an option below to start playing!</p>
+                        <p class="text-center mb-">Select an option below to play.</p>
                         <div class="row text-center">
                             <div class="col-md d-md-flex justify-content-end mb-2 mb-md-0 px-1">
                                 <button class="btn btn-primary" [disabled]="!savedGame" (click)="continueGame()">Continue Game</button>
