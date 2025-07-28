@@ -60,6 +60,9 @@ export class CardService {
     private processRawCardLists = (rawCardLists: RawCard[][]) => {
         const cards = rawCardLists.flat().map(
             (entry): Card => ({
+                id: `${entry['1']}-${entry['3']}`
+                    .toLowerCase()
+                    .replace(/\s+/g, '_'),
                 onePoint: entry['1'],
                 threePoint: entry['3'],
             })
@@ -82,10 +85,17 @@ export class CardService {
     }
 
     // should only be called by GameService
-    _getNextCard = (): Card => {
+    _getNextCard = (usedCardIds: string[]): [Card, boolean] => {
         if (this.cards.length === 0) throw Error('no cards available')
-        const idx = this.randomSvc.getRandomInt(0, this.cards.length - 1)
-        this.logger.debug(`selected card at index ${idx}`)
-        return this.cards[idx]
+        let availableCards = this.cards.filter(
+            (card) => !usedCardIds.includes(card.id)
+        )
+        const resetAvailableCards = availableCards.length === 0
+        if (resetAvailableCards) {
+            this.logger.warn('no unused cards left, ignoring used cards')
+            availableCards = this.cards
+        }
+        const idx = this.randomSvc.getRandomInt(0, availableCards.length - 1)
+        return [availableCards[idx], resetAvailableCards]
     }
 }

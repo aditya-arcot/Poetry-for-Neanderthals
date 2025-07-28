@@ -6,6 +6,7 @@ export interface RawCard {
 }
 
 export interface Card {
+    id: string
     onePoint: string
     threePoint: string
 }

@@ -50,6 +50,7 @@ export class GameService {
                 seed,
             },
             gameplay: {
+                usedCardIds: [],
                 round: 0,
                 team: 0,
                 player: 0,
@@ -93,9 +94,18 @@ export class GameService {
 
     getNextCard = (): Card => {
         if (!this.gameState) throw Error('game state is not initialized')
-        const card = this.cardSvc._getNextCard()
+        const [card, resetAvailableCards] = this.cardSvc._getNextCard(
+            this.gameState.gameplay.usedCardIds
+        )
+        const usedCardIds: string[] = [card.id]
+        if (!resetAvailableCards) {
+            usedCardIds.push(...this.gameState.gameplay.usedCardIds)
+        }
         this.updateGameState({
-            gameplay: { rngState: this.randomSvc.rngState },
+            gameplay: {
+                usedCardIds,
+                rngState: this.randomSvc.rngState,
+            },
         })
         return card
     }

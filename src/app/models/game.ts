@@ -2,7 +2,7 @@ import { GamePointsEnum } from '@enums'
 import { Card } from '@models'
 import seedrandom from 'seedrandom'
 
-export const GAME_DATA_VERSION = 1
+export const GAME_DATA_VERSION = 2
 
 export interface GameData {
     state: GameState
@@ -26,6 +26,7 @@ interface Settings {
 }
 
 interface Gameplay {
+    usedCardIds: string[]
     round: number
     team: number
     player: number
