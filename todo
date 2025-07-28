@@ -1,3 +1,2 @@
 prevent reusing cards until all cards used
-add pre-commit hook to check object version bump
 display saved game state

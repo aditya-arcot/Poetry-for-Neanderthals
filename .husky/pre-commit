@@ -13,6 +13,10 @@ echo "Formatting and linting staged files..."
 lint-staged
 echo
 
+echo "Checking game object version..."
+./check-game-object-version.sh
+echo
+
 echo "Checking for knip issues..."
 knip
 echo
