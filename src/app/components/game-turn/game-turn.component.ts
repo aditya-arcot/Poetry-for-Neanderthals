@@ -1,4 +1,11 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    OnDestroy,
+    OnInit,
+    Output,
+} from '@angular/core'
 import { Card, isInTurn } from '@models'
 import { GameService } from '@services'
 // eslint-disable-next-line no-restricted-imports
@@ -8,7 +15,10 @@ import { LoggerComponent } from '../logger.component'
     selector: 'app-game-turn',
     templateUrl: './game-turn.component.html',
 })
-export class GameTurnComponent extends LoggerComponent implements OnInit {
+export class GameTurnComponent
+    extends LoggerComponent
+    implements OnInit, OnDestroy
+{
     @Output() turnDone = new EventEmitter<void>()
 
     private readonly gameSvc = inject(GameService)
@@ -26,6 +36,10 @@ export class GameTurnComponent extends LoggerComponent implements OnInit {
         if (!this.introScreen) {
             this.resumeScreen = true
         }
+    }
+
+    ngOnDestroy(): void {
+        this.pauseTurn()
     }
 
     get gameState() {
