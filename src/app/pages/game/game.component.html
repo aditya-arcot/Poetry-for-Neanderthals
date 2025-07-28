@@ -21,12 +21,10 @@
                         <h3 class="mb-0">Poetry for Neanderthals</h3>
                         <button class="btn btn-primary btn-sm position-absolute top-left" type="button" title="Return Home" (click)="tryReturnHome()">
                             <i class="bi bi-house"></i>
-                            <span class="ms-2 d-none d-md-inline">Home</span>
                         </button>
                         @if (isInTurn && !paused) {
                             <button class="btn btn-warning btn-sm position-absolute top-right" type="button" title="Pause Game" (click)="pauseGame()">
                                 <i class="bi bi-pause"></i>
-                                <span class="ms-2 d-none d-md-inline">Pause</span>
                             </button>
                         }
                     </div>
