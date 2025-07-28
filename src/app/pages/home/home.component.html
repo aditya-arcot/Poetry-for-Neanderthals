@@ -18,7 +18,7 @@
             <div class="card">
                 <h3 class="card-header text-center">Poetry for Neanderthals</h3>
                 <div class="card-body">
-                    @if (!newGame) {
+                    @if (selectGameScreen) {
                         <h5 class="text-center mb-2">Welcome!</h5>
                         <p class="text-center mb-1">Gather an even number of players.</p>
                         <p class="text-center mb-1">
@@ -28,13 +28,67 @@
                         <p class="text-center mb-">Select an option below to play.</p>
                         <div class="row text-center">
                             <div class="col-md d-md-flex justify-content-end mb-2 mb-md-0 px-1">
-                                <button class="btn btn-primary" [disabled]="!savedGame" (click)="continueGame()">Continue Game</button>
+                                <button class="btn btn-primary" [disabled]="!savedGame" (click)="tryContinueGame()">Continue Game</button>
                             </div>
                             <div class="col-md d-md-flex justify-content-start px-1">
                                 <button class="btn btn-success" (click)="tryStartNewGame()">Start New Game</button>
                             </div>
                         </div>
+                    } @else if (continueGameScreen) {
+                        <div class="card mb-2">
+                            <h5 class="card-header text-center">Game Settings</h5>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-bold">Time per Turn (s):</span>
+                                    <span>{{ gameState?.settings?.turnTime }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-bold">Rounds:</span>
+                                    <span>{{ gameState?.settings?.rounds }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-bold">Teams:</span>
+                                    <span>{{ gameState?.settings?.teams }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-bold">Players per Team:</span>
+                                    <span>{{ gameState?.settings?.playersPerTeam }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-bold">Seed:</span>
+                                    <span>{{ gameState?.settings?.seed }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-2">
+                            <h5 class="card-header text-center">Game State</h5>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-bold">Round:</span>
+                                    <span>{{ (gameState?.gameplay?.round ?? 0) + 1 }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-bold">Team:</span>
+                                    <span>{{ (gameState?.gameplay?.team ?? 0) + 1 }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-bold">Player:</span>
+                                    <span>{{ (gameState?.gameplay?.player ?? 0) + 1 }}</span>
+                                </div>
+                                <div class="mb-1 text-center"><strong>Scores</strong></div>
+                                @for (score of gameState?.gameplay?.scores; track $index) {
+                                    <div class="d-flex justify-content-between" [class.mb-1]="$index !== (gameState?.settings?.teams ?? 0) - 1">
+                                        <span class="fw-bold">Team {{ $index + 1 }}:</span>
+                                        <span>{{ score }}</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-primary" title="Continue Game" (click)="continueGame()">Continue Game</button>
+                        </div>
                     } @else {
+                        <h5 class="text-center mb-2">Game Settings</h5>
                         <form #newGameForm class="needs-validation" [formGroup]="newGameFormGroup" novalidate>
                             <div class="mb-2">
                                 <label for="turnTime">Time per Turn (s)</label>

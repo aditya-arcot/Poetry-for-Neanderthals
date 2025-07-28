@@ -37,7 +37,8 @@ export class HomeComponent
     newGameFormGroup: FormGroup
 
     savedGame = false
-    newGame = false
+    selectGameScreen = true
+    continueGameScreen = false
 
     constructor() {
         super('HomeComponent')
@@ -53,8 +54,12 @@ export class HomeComponent
         )
     }
 
+    get gameState() {
+        return this.gameSvc.gameState
+    }
+
     ngOnInit(): void {
-        if (this.gameSvc.gameState) {
+        if (this.gameState) {
             this.logger.debug('found existing game state')
             this.savedGame = true
         }
@@ -66,8 +71,14 @@ export class HomeComponent
         this.modalInstance = new Modal(modalElement)
     }
 
+    tryContinueGame = () => {
+        this.logger.info('trying to continue game')
+        this.selectGameScreen = false
+        this.continueGameScreen = true
+    }
+
     continueGame = () => {
-        this.logger.info('continuing existing game')
+        this.logger.info('continuing game')
         void this.router.navigateByUrl(RouteEnum.Game)
     }
 
@@ -82,7 +93,8 @@ export class HomeComponent
 
     startNewGame = () => {
         this.logger.info('starting new game')
-        this.newGame = true
+        this.selectGameScreen = false
+        this.continueGameScreen = false
     }
 
     handleNewGameFormKeypress = (event: KeyboardEvent) => {
