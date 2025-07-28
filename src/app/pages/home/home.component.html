@@ -19,7 +19,7 @@
                 <h3 class="card-header text-center">Poetry for Neanderthals</h3>
                 <div class="card-body">
                     @if (selectGameScreen) {
-                        <h5 class="text-center mb-2">Welcome!</h5>
+                        <h4 class="text-center mb-2">Welcome!</h4>
                         <p class="text-center mb-1">Gather an even number of players.</p>
                         <p class="text-center mb-1">
                             Check out the rules
@@ -35,60 +35,43 @@
                             </div>
                         </div>
                     } @else if (continueGameScreen) {
-                        <div class="card mb-2">
-                            <h5 class="card-header text-center">Game Settings</h5>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="fw-bold">Time per Turn (s):</span>
-                                    <span>{{ gameState?.settings?.turnTime }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="fw-bold">Rounds:</span>
-                                    <span>{{ gameState?.settings?.rounds }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="fw-bold">Teams:</span>
-                                    <span>{{ gameState?.settings?.teams }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="fw-bold">Players per Team:</span>
-                                    <span>{{ gameState?.settings?.playersPerTeam }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span class="fw-bold">Seed:</span>
-                                    <span>{{ gameState?.settings?.seed }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card mb-2">
-                            <h5 class="card-header text-center">Game State</h5>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="fw-bold">Round:</span>
-                                    <span>{{ (gameState?.gameplay?.round ?? 0) + 1 }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="fw-bold">Team:</span>
-                                    <span>{{ (gameState?.gameplay?.team ?? 0) + 1 }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="fw-bold">Player:</span>
-                                    <span>{{ (gameState?.gameplay?.player ?? 0) + 1 }}</span>
-                                </div>
-                                <div class="mb-1 text-center"><strong>Scores</strong></div>
-                                @for (score of gameState?.gameplay?.scores; track $index) {
-                                    <div class="d-flex justify-content-between" [class.mb-1]="$index !== (gameState?.settings?.teams ?? 0) - 1">
-                                        <span class="fw-bold">Team {{ $index + 1 }}:</span>
-                                        <span>{{ score }}</span>
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="card mb-2">
+                                    <h4 class="card-header text-center">Game Settings</h4>
+                                    <div class="card-body text-center">
+                                        <div class="mb-1"><strong>Time per Turn (s):</strong> {{ gameState?.settings?.turnTime }}</div>
+                                        <div class="mb-1"><strong>Rounds:</strong> {{ gameState?.settings?.rounds }}</div>
+                                        <div class="mb-1"><strong>Teams:</strong> {{ gameState?.settings?.teams }}</div>
+                                        <div class="mb-1"><strong>Players per Team:</strong> {{ gameState?.settings?.playersPerTeam }}</div>
+                                        <div class="mb-1"><strong>Seed:</strong> {{ gameState?.settings?.seed }}</div>
                                     </div>
-                                }
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="card mb-2">
+                                    <h4 class="card-header text-center">Game State</h4>
+                                    <div class="card-body text-center">
+                                        <div class="mb-1"><strong>Round:</strong> {{ (gameState?.gameplay?.round ?? 0) + 1 }}</div>
+                                        <div class="mb-1"><strong>Team:</strong> {{ (gameState?.gameplay?.team ?? 0) + 1 }}</div>
+                                        <div class="mb-1"><strong>Player:</strong> {{ (gameState?.gameplay?.player ?? 0) + 1 }}</div>
+                                        <hr />
+                                        <h5 class="text-center mb-2">Scores</h5>
+                                        @for (score of gameState?.gameplay?.scores; track $index) {
+                                            <div [class.mb-1]="$index !== (gameState?.settings?.teams ?? 0) - 1">
+                                                <strong>Team {{ $index + 1 }}:</strong> {{ score }}
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                         <div class="text-center">
                             <button type="button" class="btn btn-primary" title="Continue Game" (click)="continueGame()">Continue Game</button>
                         </div>
                     } @else {
-                        <h5 class="text-center mb-2">Game Settings</h5>
+                        <h4 class="text-center mb-2">Game Settings</h4>
                         <form #newGameForm class="needs-validation" [formGroup]="newGameFormGroup" novalidate>
                             <div class="mb-2">
                                 <label for="turnTime">Time per Turn (s)</label>
