@@ -62,7 +62,7 @@ export class HomeComponent
 
     ngAfterViewInit(): void {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const modalElement = document.getElementById('modal')!
+        const modalElement = document.getElementById('overrideGameModal')!
         this.modalInstance = new Modal(modalElement)
     }
 

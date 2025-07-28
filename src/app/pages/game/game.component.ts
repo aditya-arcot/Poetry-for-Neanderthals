@@ -1,4 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core'
+import {
+    AfterViewInit,
+    Component,
+    inject,
+    OnInit,
+    ViewChild,
+} from '@angular/core'
 import { Router } from '@angular/router'
 import {
     GameSummaryComponent,
@@ -7,7 +13,9 @@ import {
     LoggerComponent,
 } from '@components'
 import { RouteEnum } from '@enums'
+import { isInTurn } from '@models'
 import { GameService } from '@services'
+import { Modal } from 'bootstrap'
 
 @Component({
     imports: [
@@ -17,9 +25,17 @@ import { GameService } from '@services'
     ],
     templateUrl: './game.component.html',
 })
-export class GameComponent extends LoggerComponent implements OnInit {
+export class GameComponent
+    extends LoggerComponent
+    implements OnInit, AfterViewInit
+{
     private readonly gameSvc = inject(GameService)
     private readonly router = inject(Router)
+
+    private modalInstance!: Modal
+    private viewInit = false
+
+    @ViewChild(GameTurnComponent) gameTurnComponent!: GameTurnComponent
 
     constructor() {
         super('GameComponent')
@@ -32,10 +48,51 @@ export class GameComponent extends LoggerComponent implements OnInit {
         }
     }
 
+    ngAfterViewInit(): void {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const modalElement = document.getElementById('returnHomeModal')!
+        this.modalInstance = new Modal(modalElement)
+        this.viewInit = true
+    }
+
     get gameState() {
         const state = this.gameSvc.gameState
         if (!state) throw Error('failed to get game state')
         return state
+    }
+
+    get isInTurn(): boolean {
+        return isInTurn(this.gameState)
+    }
+
+    get paused(): boolean {
+        if (!this.viewInit) return true
+        return this.gameTurnComponent.resumeScreen
+    }
+
+    tryReturnHome = () => {
+        this.logger.info('trying to return home')
+        if (!this.isInTurn || this.paused) {
+            this.returnHome()
+            return
+        }
+        this.pauseGame()
+        this.modalInstance.show()
+    }
+
+    returnHome = () => {
+        this.logger.info('returning home')
+        void this.router.navigateByUrl(RouteEnum.Home)
+    }
+
+    pauseGame = () => {
+        this.logger.info('pausing game')
+        this.gameTurnComponent.pauseTurn()
+    }
+
+    resumeGame = () => {
+        this.logger.info('resuming game')
+        this.gameTurnComponent.resumeTurn()
     }
 
     handleTurnDone = (): void => {

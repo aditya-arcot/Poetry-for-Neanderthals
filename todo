@@ -1,5 +1,4 @@
 prevent reusing cards until all cards used
 add pre-commit hook to check object version bump
 display saved game state
-add pause functionality
-add return to home button
+fix timer bug (navigate back to home and then forward to game)

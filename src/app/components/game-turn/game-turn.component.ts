@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core'
-import { Card } from '@models'
+import { Card, isInTurn } from '@models'
 import { GameService } from '@services'
 // eslint-disable-next-line no-restricted-imports
 import { LoggerComponent } from '../logger.component'
@@ -12,6 +12,7 @@ export class GameTurnComponent extends LoggerComponent implements OnInit {
     @Output() turnDone = new EventEmitter<void>()
 
     private readonly gameSvc = inject(GameService)
+    private timer: NodeJS.Timeout | null = null
 
     introScreen = true
     resumeScreen = false
@@ -21,7 +22,7 @@ export class GameTurnComponent extends LoggerComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.introScreen = this.gameState.gameplay.turn.timeRemaining < 1
+        this.introScreen = !isInTurn(this.gameState)
         if (!this.introScreen) {
             this.resumeScreen = true
         }
@@ -81,8 +82,15 @@ export class GameTurnComponent extends LoggerComponent implements OnInit {
     }
 
     resumeTurn = () => {
+        this.logger.debug('resuming turn')
         this.resumeScreen = false
         this.startTurn(false)
+    }
+
+    pauseTurn = () => {
+        this.logger.debug('pausing turn')
+        this.resumeScreen = true
+        this.pauseTimer()
     }
 
     startTurn = (newTurn = true): void => {
@@ -105,7 +113,11 @@ export class GameTurnComponent extends LoggerComponent implements OnInit {
             cards: this.cards,
         })
 
-        const interval = setInterval(() => {
+        this.setTimer()
+    }
+
+    private setTimer = (): void => {
+        this.timer = setInterval(() => {
             this.gameSvc.updateGameState({
                 gameplay: {
                     turn: {
@@ -114,7 +126,8 @@ export class GameTurnComponent extends LoggerComponent implements OnInit {
                 },
             })
             if (this.timeRemaining < 1) {
-                clearInterval(interval)
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                clearInterval(this.timer!)
                 this.logger.debug('ending turn', {
                     points: this.points,
                     cards: this.cards,
@@ -122,6 +135,14 @@ export class GameTurnComponent extends LoggerComponent implements OnInit {
                 this.turnDone.emit()
             }
         }, 1000)
+    }
+
+    private pauseTimer = (): void => {
+        if (this.timer) {
+            clearInterval(this.timer)
+            this.timer = null
+            this.logger.debug('paused timer')
+        }
     }
 
     advance = (points: number): void => {

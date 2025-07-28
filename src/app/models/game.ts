@@ -43,6 +43,14 @@ interface Turn {
     cards: Card[]
 }
 
+export const isInTurn = (gameState: GameState): boolean => {
+    return (
+        !gameState.gameplay.gameOver &&
+        gameState.gameplay.turn.timeRemaining > 0 &&
+        !gameState.gameplay.turn.isDone
+    )
+}
+
 export const gamePointsCategoryMap: Record<GamePointsEnum, string> = {
     [GamePointsEnum.One]: 'primary',
     [GamePointsEnum.Three]: 'success',

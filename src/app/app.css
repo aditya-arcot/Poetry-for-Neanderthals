@@ -6,6 +6,12 @@
     font-weight: bold;
 }
 
+::ng-deep .top-left {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 ::ng-deep .top-right {
     right: 0;
     top: 50%;
