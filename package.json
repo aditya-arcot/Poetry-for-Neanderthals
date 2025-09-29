@@ -17,12 +17,12 @@
         ]
     },
     "dependencies": {
-        "@angular/common": "^20.3.1",
-        "@angular/compiler": "^20.3.1",
-        "@angular/core": "^20.3.1",
-        "@angular/forms": "^20.3.1",
-        "@angular/platform-browser": "^20.3.1",
-        "@angular/router": "^20.3.1",
+        "@angular/common": "^20.3.2",
+        "@angular/compiler": "^20.3.2",
+        "@angular/core": "^20.3.2",
+        "@angular/forms": "^20.3.2",
+        "@angular/platform-browser": "^20.3.2",
+        "@angular/router": "^20.3.2",
         "bootstrap": "^5.3.8",
         "bootstrap-icons": "^1.13.1",
         "crypto-js": "^4.2.0",
@@ -37,9 +37,9 @@
     },
     "devDependencies": {
         "@angular-eslint/builder": "^20.3.0",
-        "@angular/build": "^20.3.2",
-        "@angular/cli": "^20.3.2",
-        "@angular/compiler-cli": "^20.3.1",
+        "@angular/build": "^20.3.3",
+        "@angular/cli": "^20.3.3",
+        "@angular/compiler-cli": "^20.3.2",
         "@eslint/js": "^9.36.0",
         "@types/bootstrap": "^5.2.10",
         "@types/crypto-js": "^4.2.2",
@@ -48,12 +48,12 @@
         "angular-eslint": "20.3.0",
         "eslint": "^9.36.0",
         "husky": "^9.1.7",
-        "knip": "^5.63.1",
-        "lint-staged": "^16.1.6",
-        "npm-check-updates": "^18.3.0",
+        "knip": "^5.64.1",
+        "lint-staged": "^16.2.3",
+        "npm-check-updates": "^19.0.0",
         "prettier": "^3.6.2",
         "prettier-plugin-organize-imports": "^4.3.0",
         "typescript": "~5.8.3",
-        "typescript-eslint": "8.44.0"
+        "typescript-eslint": "8.44.1"
     }
 }
