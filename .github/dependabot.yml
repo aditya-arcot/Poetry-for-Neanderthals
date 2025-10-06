@@ -5,8 +5,9 @@ updates:
       schedule:
           interval: 'weekly'
           day: 'monday'
-          time: '00:00'
-          timezone: 'America/Chicago'
+      ignore:
+          - dependency-name: '*'
+            update-types: ['version-update:semver-major']
       groups:
           dependencies:
               patterns:
@@ -19,8 +20,6 @@ updates:
       schedule:
           interval: 'weekly'
           day: 'monday'
-          time: '00:00'
-          timezone: 'America/Chicago'
       groups:
           docker:
               patterns:
@@ -33,8 +32,6 @@ updates:
       schedule:
           interval: 'weekly'
           day: 'monday'
-          time: '00:00'
-          timezone: 'America/Chicago'
       groups:
           github-actions:
               patterns:
