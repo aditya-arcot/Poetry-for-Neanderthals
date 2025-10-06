@@ -1,4 +1,4 @@
-name: CodeQL
+name: Run CodeQL Analysis
 
 on:
     push:
@@ -82,7 +82,7 @@ jobs:
                   npm ci
                   npm run build
 
-            - name: perform CodeQL analysis
+            - name: run codeql
               uses: github/codeql-action/analyze@v3
               with:
                   category: '/language:${{matrix.language}}'
