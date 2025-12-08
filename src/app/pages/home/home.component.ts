@@ -102,17 +102,20 @@ export class HomeComponent
     }
 
     validateNewGameForm = () => {
-        const newGameForm = this.newGameForm?.nativeElement
+        const newGameForm = this.newGameForm.nativeElement
         if (!this.newGameFormGroup.valid) this.logger.debug('validation failed')
         else this.startGame()
         newGameForm.classList.add('was-validated')
     }
 
     validateCustomSeed = (control: AbstractControl) => {
-        const useCustomSeed: boolean = control.get('useCustomSeed')?.value
+        const useCustomSeed: boolean = control.get('useCustomSeed')
+            ?.value as boolean
         if (!useCustomSeed) return null
 
-        const customSeed: number | null = control.get('customSeed')?.value
+        const customSeed: number | null = control.get('customSeed')?.value as
+            | number
+            | null
         if (customSeed === null) return { customSeedRequired: true }
         if (customSeed < 0 || customSeed > 999999)
             return { customSeedOutOfRange: true }
@@ -129,6 +132,7 @@ export class HomeComponent
     }
 
     private startGame = () => {
+        /* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access */
         this.logger.debug('starting game', { ...this.newGameFormGroup.value })
         const seed = String(
             this.newGameFormGroup.value.customSeed ?? Date.now() % 1000000
@@ -142,5 +146,6 @@ export class HomeComponent
             seed
         )
         void this.router.navigateByUrl(RouteEnum.Game)
+        /* eslint-enable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access */
     }
 }

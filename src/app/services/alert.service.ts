@@ -59,7 +59,9 @@ export class AlertService {
             subtext: subtext.map((s) => capitalizeFirstLetter(s.trim())),
         }
         const timeout = setTimeout(
-            () => this.removeAlert(alert.id),
+            () => {
+                this.removeAlert(alert.id)
+            },
             alert.type === AlertTypeEnum.Error ? 15000 : 5000
         )
         alert.timeout = timeout

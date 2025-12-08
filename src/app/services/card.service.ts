@@ -27,9 +27,11 @@ export class CardService {
         this.logger.info('loading cards')
         return this.getCardFileNames().pipe(
             switchMap((fileNames) => this.getRawCardLists(fileNames)),
-            map((rawCardLists) => this.processRawCardLists(rawCardLists)),
-            catchError((err) => {
-                this.logger.error('error loading cards', err)
+            map((rawCardLists) => {
+                this.processRawCardLists(rawCardLists)
+            }),
+            catchError((err: unknown) => {
+                this.logger.error('error loading cards', { err })
                 throw Error('failed to load cards')
             })
         )
@@ -38,7 +40,7 @@ export class CardService {
     private getCardFileNames = (): Observable<string[]> => {
         return this.http.get<string[]>(`${this.baseUrl}/index.json`).pipe(
             switchMap((fileNames: string[] | null) => {
-                if (!fileNames || !fileNames.length) {
+                if (!fileNames?.length) {
                     throw Error('no card filenames found in index')
                 }
                 this.logger.debug('found card filenames', { fileNames })
@@ -50,7 +52,7 @@ export class CardService {
     private getRawCardLists = (
         fileNames: string[]
     ): Observable<RawCard[][]> => {
-        this.logger.debug(`loading ${fileNames.length} card files`)
+        this.logger.debug(`loading ${String(fileNames.length)} card files`)
         const requests = fileNames.map((name) =>
             this.http.get<RawCard[]>(`${this.baseUrl}/${name}.json`)
         )
@@ -80,7 +82,7 @@ export class CardService {
                       .localeCompare(b.threePoint.toLowerCase())
         })
 
-        this.logger.debug(`loaded ${cards.length} cards`, { cards })
+        this.logger.debug(`loaded ${String(cards.length)} cards`, { cards })
         this.cards = cards
     }
 

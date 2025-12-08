@@ -55,7 +55,7 @@ export class GameTurnComponent
     get timeRemainingString(): string {
         const time = this.timeRemaining
         if (time == 1) return '1 second'
-        return `${time} seconds`
+        return `${String(time)} seconds`
     }
 
     get turnTime(): number {

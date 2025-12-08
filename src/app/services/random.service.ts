@@ -13,6 +13,7 @@ export class RandomService {
 
     get rngState(): seedrandom.State.Arc4 | null {
         // @ts-expect-error state is defined
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
         return this.rng ? this.rng.state() : null
     }
 

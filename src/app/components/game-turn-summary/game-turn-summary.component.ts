@@ -139,6 +139,7 @@ export class GameTurnSummaryComponent
     ): string => {
         const classes = ['btn', 'btn-link']
         if (this.isEditing) classes.push('editing')
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         if (cardIdx < this.points.length && this.points[cardIdx] === pointsEnum)
             classes.push(...this.getSelectedClasses(pointsEnum))
         else classes.push('text-body-tertiary')

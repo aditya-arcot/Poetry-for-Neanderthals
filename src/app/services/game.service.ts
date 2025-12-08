@@ -54,7 +54,7 @@ export class GameService {
                 round: 0,
                 team: 0,
                 player: 0,
-                scores: [...Array(teams).fill(0)],
+                scores: [...Array<number>(teams).fill(0)],
                 turn: {
                     isDone: false,
                     isEditing: false,
@@ -77,6 +77,7 @@ export class GameService {
             cloneDeep(this.gameState),
             state,
             (_, srcValue) => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 if (Array.isArray(srcValue)) return srcValue
                 return
             }

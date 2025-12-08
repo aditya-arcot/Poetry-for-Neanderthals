@@ -3,4 +3,6 @@ import { App } from 'app/app'
 import { appConfig } from 'app/app.config'
 
 // eslint-disable-next-line no-console
-bootstrapApplication(App, appConfig).catch((err) => console.error(err))
+bootstrapApplication(App, appConfig).catch((err: unknown) => {
+    console.error(err)
+})
