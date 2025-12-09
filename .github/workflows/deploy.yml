@@ -42,6 +42,19 @@ jobs:
                   node-version: 'lts/*'
                   check-latest: true
 
+            - name: create vars
+              run: |
+                  VERSION=${{ github.run_number }}-${{ github.run_attempt }}-${{ github.run_id }}
+                  echo "REPO=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+                  echo "IMAGE_TAG=$(date +%Y-%m-%d).$VERSION" >> $GITHUB_ENV
+
+            - name: modify environment.ts
+              working-directory: src
+              run: |
+                  sed -e "s/{IMAGE_TAG}/${{ env.IMAGE_TAG}}/g" \
+                    environment.ts > environment.ts.tmp
+                  mv environment.ts.tmp environment.ts
+
             - name: install, build
               run: |
                   npm config ls
@@ -53,12 +66,6 @@ jobs:
                   mkdir stage
                   cp -r nginx.conf dist stage/
                   find stage -type f
-
-            - name: create vars
-              run: |
-                  VERSION=${{ github.run_number }}-${{ github.run_attempt }}-${{ github.run_id }}
-                  echo "REPO=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-                  echo "IMAGE_TAG=$(date +%Y-%m-%d).$VERSION" >> $GITHUB_ENV
 
             - name: build, push docker image
               working-directory: stage

@@ -8,6 +8,7 @@ import {
     createLoggerWithContext,
     LoggerService,
 } from '@services'
+import { env } from 'environment'
 import { catchError, Observable, of, switchMap } from 'rxjs'
 
 @Injectable({
@@ -27,6 +28,7 @@ export class StartupService {
 
     startup = (): Observable<void> => {
         this.logger.info('starting up')
+        this.logger.info(`image tag: ${env.imageTag}`)
         return this.cardSvc.loadCards().pipe(
             switchMap(() => {
                 this.success = true
