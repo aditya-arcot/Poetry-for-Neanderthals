@@ -1,5 +1,7 @@
 name: Deploy Application
+
 on:
+    workflow_dispatch:
     push:
         branches:
             - main
@@ -20,10 +22,7 @@ concurrency:
     cancel-in-progress: true
 
 permissions:
-    contents: read
-
-env:
-    NPM_CONFIG_USERCONFIG: /dev/null
+    contents: none
 
 jobs:
     deploy:
@@ -42,13 +41,11 @@ jobs:
               with:
                   node-version: 'lts/*'
                   check-latest: true
-                  cache: 'npm'
-                  cache-dependency-path: package-lock.json
 
             - name: install, build
               run: |
                   npm config ls
-                  npm ci
+                  npm ci --cache .npm
                   npm run build
 
             - name: copy files
@@ -57,7 +54,7 @@ jobs:
                   cp -r nginx.conf dist stage/
                   find stage -type f
 
-            - name: initial vars
+            - name: create vars
               run: |
                   VERSION=${{ github.run_number }}-${{ github.run_attempt }}-${{ github.run_id }}
                   echo "REPO=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
@@ -79,7 +76,6 @@ jobs:
               run: docker compose up -d
 
             - name: configure, test, reload nginx
-              if: github.ref_name == 'main'
               run: |
                   sed -e "s/{PORT}/${{ secrets.PORT }}/g" \
                     poetry-for-neanderthals.conf > poetry-for-neanderthals.conf.tmp
@@ -87,3 +83,7 @@ jobs:
                   cp poetry-for-neanderthals.conf /usr/local/etc/nginx/servers/
                   nginx -t
                   nginx -s reload
+
+            - name: remove cache folder
+              if: always()
+              run: rm -rf .npm

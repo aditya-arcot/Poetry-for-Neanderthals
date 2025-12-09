@@ -1,14 +1,13 @@
 name: Build Application
+
 on:
+    workflow_dispatch:
     pull_request_target:
         branches:
             - main
 
 permissions:
-    contents: read
-
-env:
-    NPM_CONFIG_USERCONFIG: /dev/null
+    contents: none
 
 jobs:
     build:
@@ -17,18 +16,20 @@ jobs:
             - name: checkout
               uses: actions/checkout@v6
               with:
-                  ref: ${{ github.event.pull_request.head.sha }}
+                  ref: ${{ github.event.pull_request.head.sha || github.ref_name }}
 
             - name: setup node
               uses: actions/setup-node@v6
               with:
                   node-version: 'lts/*'
                   check-latest: true
-                  cache: 'npm'
-                  cache-dependency-path: package-lock.json
 
             - name: install, build
               run: |
                   npm config ls
-                  npm ci
+                  npm ci --cache .npm
                   npm run build
+
+            - name: remove cache folder
+              if: always()
+              run: rm -rf .npm
