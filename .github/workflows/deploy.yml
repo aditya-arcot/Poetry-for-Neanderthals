@@ -8,6 +8,7 @@ on:
             - 'public/**'
             - 'src/**'
             - 'angular.json'
+            - 'docker-compose.yml'
             - 'Dockerfile'
             - '*.conf'
             - 'package-lock.json'
