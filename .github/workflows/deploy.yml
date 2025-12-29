@@ -12,7 +12,7 @@ on:
             - 'angular.json'
             - 'docker-compose.yml'
             - 'Dockerfile'
-            - '*.conf'
+            - 'nginx.conf'
             - 'package-lock.json'
             - 'package.json'
             - 'tsconfig.json'
@@ -45,7 +45,6 @@ jobs:
             - name: create vars
               run: |
                   VERSION=${{ github.run_number }}-${{ github.run_attempt }}-${{ github.run_id }}
-                  echo "REPO=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
                   echo "IMAGE_TAG=$(date +%Y-%m-%d).$VERSION" >> $GITHUB_ENV
 
             - name: modify environment.ts
@@ -70,26 +69,15 @@ jobs:
             - name: build, push docker image
               working-directory: stage
               run: |
-                  IMAGE=${{ secrets.DOCKER_REGISTRY }}/${{ env.REPO }}:${{ env.IMAGE_TAG }}
+                  IMAGE=${{ secrets.DOCKER_REGISTRY }}/poetry-for-neanderthals:${{ env.IMAGE_TAG }}
                   docker build -t $IMAGE -f ../Dockerfile .
                   docker push $IMAGE
                   echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
 
             - name: start docker
               env:
-                  REPO: ${{ env.REPO }}
                   IMAGE: ${{ env.IMAGE }}
-                  PORT: ${{ secrets.PORT }}
               run: docker compose up -d
-
-            - name: configure, test, reload nginx
-              run: |
-                  sed -e "s/{PORT}/${{ secrets.PORT }}/g" \
-                    poetry-for-neanderthals.conf > poetry-for-neanderthals.conf.tmp
-                  mv poetry-for-neanderthals.conf.tmp poetry-for-neanderthals.conf
-                  cp poetry-for-neanderthals.conf /usr/local/etc/nginx/servers/
-                  nginx -t
-                  nginx -s reload
 
             - name: remove cache folder
               if: always()
