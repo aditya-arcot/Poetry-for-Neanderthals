@@ -11,8 +11,6 @@ services:
             - traefik.enable=true
             - traefik.http.routers.poetry-for-neanderthals.rule=Host(`poetry-for-neanderthals.aarcot.com`)
             - traefik.http.routers.poetry-for-neanderthals.entrypoints=websecure
-            - traefik.http.routers.poetry-for-neanderthals.tls=true
-            - traefik.http.routers.poetry-for-neanderthals.tls.certresolver=le
 
 networks:
     traefik-public:
