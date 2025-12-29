@@ -2,7 +2,7 @@ name: poetry-for-neanderthals
 
 services:
     app:
-        image: ${IMAGE}
+        image: ${IMAGE?}
         container_name: poetry-for-neanderthals
         restart: always
         networks:
