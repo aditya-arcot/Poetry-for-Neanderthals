@@ -22,7 +22,7 @@ knip
 echo
 
 echo "Checking for available updates..."
-ncu -e 2
+ncu
 echo
 
 echo "Done running pre-commit hook"
