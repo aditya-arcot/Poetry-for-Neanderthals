@@ -45,6 +45,7 @@ jobs:
                   check-latest: true
 
             - name: update npm
+              if: matrix.language == 'typescript'
               run: npm i -g npm@latest
 
             - name: initialize codeql for actions
