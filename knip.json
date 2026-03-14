@@ -1,5 +1,4 @@
 {
     "$schema": "https://unpkg.com/knip@5/schema.json",
-    "ignore": [".ncurc.js"],
     "ignoreDependencies": ["bootstrap-icons", "npm-check-updates"]
 }
